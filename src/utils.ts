@@ -1,33 +1,41 @@
-import { readdir } from "node:fs/promises";
+import { mkdir, readdir, writeFile } from "node:fs/promises";
 import { extname, join } from "path";
 import { IconMeta } from "./types";
 import type { SVGIcons2SVGFontStreamOptions } from "svgicons2svgfont";
+import Stream from "node:stream";
 
 export const svgIcon2svgFontOptions: Partial<SVGIcons2SVGFontStreamOptions> = {
   fontName: "test-font",
   normalize: true,
 };
 
-export const OPTIONS = {
-  input: "icons",
-  unicode: {
-    start: 0xf0000,
-  },
-  fonts: {
-    svg: {
-      enable: true,
-      filename: "font.svg",
-      output: "output",
-    },
-    ttf: {
-      enable: true,
-      filename: "font.tff",
-      output: "output",
-    }
-  },
+const fontTypes = ["svg", "ttf", "eot", "otf", "woff", "woff2"] as const;
+export type FontType = (typeof fontTypes)[number];
+
+export type FontOptions = {
+  enable: boolean;
+  filename: string;
+  output: string;
 };
 
-export type Options = typeof OPTIONS;
+export interface Config {
+  name: string;
+  input: string;
+  unicode: {
+    start: number;
+  };
+  fonts: Record<FontType, FontOptions>;
+}
+
+export interface Options {
+  name?: string;
+  input?: string;
+  output?: string;
+  unicode?: {
+    start: number;
+  };
+  fonts?: { output?: string } & Partial<Record<FontType, Partial<FontOptions>>>;
+}
 
 export async function loadIconsMeta(input: string): Promise<IconMeta[]> {
   const entries = await readdir(input, { withFileTypes: true });
@@ -45,6 +53,21 @@ export async function loadIconsMeta(input: string): Promise<IconMeta[]> {
   });
 
   return (await Promise.all(scanner)).flat();
+}
+
+export async function saveFont(
+  font:
+    | string
+    | NodeJS.ArrayBufferView
+    | Iterable<string | NodeJS.ArrayBufferView>
+    | AsyncIterable<string | NodeJS.ArrayBufferView>
+    | Stream,
+  opts: FontOptions,
+): Promise<void> {
+  await mkdir(opts.output, { recursive: true });
+  const path = join(opts.output, opts.filename);
+  await writeFile(path, font);
+  console.log(`Saved: ${path}`);
 }
 
 export function printProgress(current: number, total: number) {

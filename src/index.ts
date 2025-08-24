@@ -1,44 +1,47 @@
-import { loadIconsMeta, OPTIONS } from "./utils";
+import { loadIconsMeta, saveFont } from "./utils";
 import type { IconMeta } from "./types";
 import { generateSVG } from "./fonts";
 import svg2ttf from "svg2ttf";
-import { mkdir, writeFile } from "node:fs/promises";
-import { join } from "path";
+import ttf2woff2 from "ttf2woff2";
+import { loadConfig } from "./config";
 
 async function main() {
-  const icons: IconMeta[] = await loadIconsMeta(OPTIONS.input);
+  const config = await loadConfig();
+
+  const icons: IconMeta[] = await loadIconsMeta(config.input);
   console.log(`${icons.length} icons found`);
 
   try {
     console.group("Font[SVG]");
     console.log("Generating the font...");
-    const fontSvg = await generateSVG(icons, OPTIONS);
+    const svg = await generateSVG(icons, config);
     console.log("Font generated");
 
-    if (OPTIONS.fonts.svg.enable) {
-      await mkdir(OPTIONS.fonts.svg.output, { recursive: true });
-      const path = join(OPTIONS.fonts.svg.output, OPTIONS.fonts.svg.filename);
-      await writeFile(path, fontSvg);
-      console.log(`Saved: ${path}`);
+    if (config.fonts.svg.enable) {
+      await saveFont(svg, config.fonts.svg);
     }
     console.groupEnd();
 
     console.group("Font[TTF]");
     console.log("Generating the font...");
-    const ttf = svg2ttf(fontSvg.toString());
+    const ttf = svg2ttf(svg.toString());
     console.log("Font generated");
 
-    if (OPTIONS.fonts.ttf.enable) {
-      await mkdir(OPTIONS.fonts.svg.output, { recursive: true });
-      const path = join(OPTIONS.fonts.ttf.output, OPTIONS.fonts.ttf.filename);
-      await writeFile(
-        join(OPTIONS.fonts.ttf.output, OPTIONS.fonts.ttf.filename),
-        ttf.buffer,
-      );
-      console.log(`Saved: ${path}`);
+    if (config.fonts.ttf.enable) {
+      await saveFont(ttf.buffer, config.fonts.ttf);
     }
     console.groupEnd();
 
+    console.group("Font[WOFF2]");
+    console.log("Generating the font...");
+    const woff2 = ttf2woff2(ttf.buffer);
+    console.log("Font generated");
+
+    if (config.fonts.woff2.enable) {
+      await saveFont(woff2, config.fonts.woff2);
+    }
+
+    console.groupEnd();
   } catch (e) {
     console.log(e);
   }

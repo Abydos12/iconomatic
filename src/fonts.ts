@@ -1,17 +1,17 @@
 import type { IconMeta } from "./types";
 import { SVGIcons2SVGFontStream } from "svgicons2svgfont";
 import { createReadStream } from "node:fs";
-import { Options, printProgress, svgIcon2svgFontOptions } from "./utils";
+import { Config, printProgress, svgIcon2svgFontOptions } from "./utils";
 
 export async function generateSVG(
   icons: IconMeta[],
-  options: Options,
+  config: Config,
 ): Promise<Buffer> {
   const fontStream: SVGIcons2SVGFontStream = new SVGIcons2SVGFontStream(
     svgIcon2svgFontOptions,
   );
 
-  let codepoint: number = options.unicode.start;
+  let codepoint: number = config.unicode.start;
 
   for (const [index, icon] of icons.entries()) {
     const glyph = createReadStream(icon.path);
