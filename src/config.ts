@@ -1,5 +1,5 @@
 import { cosmiconfig } from "cosmiconfig";
-import { Config, FontOptions, FontType, Options } from "./utils";
+import { Config, FontConfig, FontType, Options } from "./types";
 
 const explorer = cosmiconfig("fontomatic");
 
@@ -22,7 +22,7 @@ async function loadOptions(): Promise<Options> {
 function parseConfig(opts: Options): Config {
   const name = opts.name ?? "font";
 
-  const parseFontConfig = (opts: Options, fontType: FontType): FontOptions => {
+  const parseFontConfig = (opts: Options, fontType: FontType): FontConfig => {
     return {
       enable: opts.fonts?.[fontType]?.enable ?? true,
       filename: `${opts.fonts?.[fontType]?.filename ?? name}.${fontType}`,
@@ -36,8 +36,10 @@ function parseConfig(opts: Options): Config {
   return {
     name,
     input: opts.input ?? "icons",
+    prefix: null,
     unicode: {
       start: opts.unicode?.start ?? 0xf0000,
+      codepoints: {},
     },
     fonts: {
       svg: parseFontConfig(opts, "svg"),

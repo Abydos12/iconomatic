@@ -6,7 +6,7 @@ const outputDir = "icons";
 
 async function main(): Promise<void> {
   // Locate icons
-  const filename = locate("mdi");
+  const filename = locate("material-symbols");
 
   // Load icon set
   const data = JSON.parse(await readFile(filename, "utf8"));

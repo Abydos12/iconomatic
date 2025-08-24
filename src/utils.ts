@@ -1,6 +1,6 @@
 import { mkdir, readdir, writeFile } from "node:fs/promises";
 import { extname, join } from "path";
-import { IconMeta } from "./types";
+import { Config, FontConfig, IconMeta } from "./types";
 import type { SVGIcons2SVGFontStreamOptions } from "svgicons2svgfont";
 import Stream from "node:stream";
 
@@ -9,50 +9,36 @@ export const svgIcon2svgFontOptions: Partial<SVGIcons2SVGFontStreamOptions> = {
   normalize: true,
 };
 
-const fontTypes = ["svg", "ttf", "eot", "otf", "woff", "woff2"] as const;
-export type FontType = (typeof fontTypes)[number];
+export async function loadIconsMeta({
+  input,
+  unicode,
+}: Config): Promise<IconMeta[]> {
+  let currentCodepoint: number = unicode.start;
+  const taken = new Set<number>(Object.values(unicode.codepoints));
 
-export type FontOptions = {
-  enable: boolean;
-  filename: string;
-  output: string;
-};
-
-export interface Config {
-  name: string;
-  input: string;
-  unicode: {
-    start: number;
-  };
-  fonts: Record<FontType, FontOptions>;
-}
-
-export interface Options {
-  name?: string;
-  input?: string;
-  output?: string;
-  unicode?: {
-    start: number;
-  };
-  fonts?: { output?: string } & Partial<Record<FontType, Partial<FontOptions>>>;
-}
-
-export async function loadIconsMeta(input: string): Promise<IconMeta[]> {
-  const entries = await readdir(input, { withFileTypes: true });
-
-  const scanner = entries.map(async (entry): Promise<IconMeta[]> => {
-    const fullPath = join(input, entry.name);
-    if (entry.isDirectory()) {
-      return loadIconsMeta(fullPath);
-    } else if (entry.isFile() && extname(entry.name) === ".svg") {
-      return [{ name: entry.name.slice(0, -4), path: fullPath }];
-    } else {
-      console.warn(`unexpected extension: ${entry.name}`);
-      return [];
+  const nextCodepoint = (): number => {
+    // skip codepoint override
+    while (taken.has(currentCodepoint)) {
+      currentCodepoint++;
     }
+    return currentCodepoint;
+  };
+
+  const entries = await readdir(input, {
+    withFileTypes: true,
   });
 
-  return (await Promise.all(scanner)).flat();
+  const metas = entries
+    .filter((entry) => entry.isFile() && extname(entry.name) === ".svg")
+    .map((entry): IconMeta => {
+      const name: string = entry.name.slice(0, -4);
+      const path: string = join(input, entry.name);
+      const codepoint: number = unicode.codepoints[name] ?? nextCodepoint();
+
+      return { name, path, codepoint };
+    });
+
+  return metas;
 }
 
 export async function saveFont(
@@ -62,7 +48,7 @@ export async function saveFont(
     | Iterable<string | NodeJS.ArrayBufferView>
     | AsyncIterable<string | NodeJS.ArrayBufferView>
     | Stream,
-  opts: FontOptions,
+  opts: FontConfig,
 ): Promise<void> {
   await mkdir(opts.output, { recursive: true });
   const path = join(opts.output, opts.filename);

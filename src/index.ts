@@ -8,8 +8,11 @@ import { loadConfig } from "./config";
 async function main() {
   const config = await loadConfig();
 
-  const icons: IconMeta[] = await loadIconsMeta(config.input);
+  const icons: IconMeta[] = await loadIconsMeta(config);
   console.log(`${icons.length} icons found`);
+  if (icons.length === 0) {
+    return;
+  }
 
   try {
     console.group("Font[SVG]");
