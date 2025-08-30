@@ -1,8 +1,9 @@
 import { mkdir, readdir, writeFile } from "node:fs/promises";
-import { extname, join } from "path";
-import { Config, FontConfig, IconMeta } from "./types";
+import { join } from "path";
+import type { Config, FontConfig, IconMeta } from "./types.ts";
 import type { SVGIcons2SVGFontStreamOptions } from "svgicons2svgfont";
 import Stream from "node:stream";
+import { extname } from "node:path";
 
 export const svgIcon2svgFontOptions: Partial<SVGIcons2SVGFontStreamOptions> = {
   fontName: "test-font",

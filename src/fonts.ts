@@ -1,7 +1,7 @@
-import type { IconMeta } from "./types";
+import type { Config, IconMeta } from "./types.ts";
 import { SVGIcons2SVGFontStream } from "svgicons2svgfont";
 import { createReadStream } from "node:fs";
-import { Config, printProgress, svgIcon2svgFontOptions } from "./utils";
+import { printProgress, svgIcon2svgFontOptions } from "./utils.ts";
 
 export async function generateSVG(
   icons: IconMeta[],

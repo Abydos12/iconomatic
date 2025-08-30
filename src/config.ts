@@ -1,5 +1,5 @@
 import { cosmiconfig } from "cosmiconfig";
-import { Config, FontConfig, FontType, Options } from "./types";
+import type { Config, FontConfig, FontType, Options } from "./types.ts";
 
 const explorer = cosmiconfig("fontomatic");
 

@@ -1,9 +1,9 @@
-import { loadIconsMeta, saveFont } from "./utils";
-import type { IconMeta } from "./types";
-import { generateSVG } from "./fonts";
+import { loadIconsMeta, saveFont } from "./utils.ts";
+import type { IconMeta } from "./types.ts";
+import { generateSVG } from "./fonts.ts";
 import svg2ttf from "svg2ttf";
 import ttf2woff2 from "ttf2woff2";
-import { loadConfig } from "./config";
+import { loadConfig } from "./config.ts";
 
 async function main() {
   const config = await loadConfig();
