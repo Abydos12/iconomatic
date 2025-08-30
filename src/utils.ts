@@ -1,6 +1,6 @@
 import { mkdir, readdir, writeFile } from "node:fs/promises";
 import { join } from "path";
-import type { Config, FontConfig, IconMeta } from "./types.ts";
+import type { Config, FontType, IconMeta } from "./types.ts";
 import type { SVGIcons2SVGFontStreamOptions } from "svgicons2svgfont";
 import Stream from "node:stream";
 import { extname } from "node:path";
@@ -35,25 +35,36 @@ export async function loadIconsMeta({
       const name: string = entry.name.slice(0, -4);
       const path: string = join(input, entry.name);
       const codepoint: number = unicode.codepoints[name] ?? nextCodepoint();
+      const char: string = String.fromCodePoint(codepoint);
 
-      return { name, path, codepoint };
+      return { name, path, codepoint, char };
     });
 
   return metas;
 }
 
-export async function saveFont(
+export async function saveFontIfNeeded(
   font:
     | string
     | NodeJS.ArrayBufferView
     | Iterable<string | NodeJS.ArrayBufferView>
     | AsyncIterable<string | NodeJS.ArrayBufferView>
     | Stream,
-  opts: FontConfig,
+  fontType: FontType,
+  config: Config,
 ): Promise<void> {
-  await mkdir(opts.output, { recursive: true });
-  const path = join(opts.output, opts.filename);
-  await writeFile(path, font);
+  const fontConfig = config.fonts[fontType];
+
+  if (!fontConfig.enabled) {
+    return;
+  }
+
+  const output = join(config.output, config.fonts.output, fontConfig.output);
+  const filename = `${fontConfig.filename}.${fontType}`;
+
+  await mkdir(output, { recursive: true });
+  const path = join(output, filename);
+  await writeFile(join(output, filename), font);
   console.log(`Saved: ${path}`);
 }
 
