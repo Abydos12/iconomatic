@@ -19,37 +19,6 @@ export async function loadConfig(): Promise<Config> {
   return config as Config;
 }
 
-// function parseConfig(opts: Options): Config {
-//   const name = opts.name ?? "font";
-//
-//   const parseFontConfig = (opts: Options, fontType: FontType): FontConfig => {
-//     return {
-//       enabled: opts.fonts?.[fontType]?.enabled ?? true,
-//       filename: `${opts.fonts?.[fontType]?.filename ?? name}.${fontType}`,
-//       output:
-//         (opts.fonts?.[fontType]?.output ?? opts.fonts?.output ?? opts.output)
-//           ? `${opts.output}/fonts`
-//           : "output/fonts",
-//     };
-//   };
-//
-//   return {
-//     name,
-//     input: opts.input ?? "icons",
-//     prefix: null,
-//     unicode: {
-//       start: opts.unicode?.start ?? 0xf0000,
-//       codepoints: {},
-//     },
-//     fonts: {
-//       svg: parseFontConfig(opts, "svg"),
-//       ttf: parseFontConfig(opts, "ttf"),
-//       woff: parseFontConfig(opts, "woff"),
-//       woff2: parseFontConfig(opts, "woff2"),
-//     },
-//   };
-// }
-
 const DEFAULT_NAME: string = "iconfont";
 
 const defaultConfig: Config = {
@@ -57,7 +26,7 @@ const defaultConfig: Config = {
   input: "icons",
   output: "output",
   clear: true,
-  prefix: undefined,
+  prefix: "icon",
   unicode: {
     start: 0xf0000,
     codepoints: {},
@@ -101,4 +70,15 @@ const defaultConfig: Config = {
     },
   },
   icons: { enabled: true, output: "icons" },
+  docs: {
+    enabled: true,
+    filename: DEFAULT_NAME,
+    output: "",
+    template: "templates/docs.html.hbs",
+  },
+  svgIcon2svgFontOptions: {
+    fontName: DEFAULT_NAME,
+    normalize: true,
+    fontHeight: 1000,
+  },
 };

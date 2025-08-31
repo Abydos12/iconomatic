@@ -1,17 +1,22 @@
-import type { Config, IconMeta } from "./types.ts";
+import type { Config, FontType, IconMeta } from "./types.ts";
 import { SVGIcons2SVGFontStream } from "svgicons2svgfont";
+import { printProgress } from "./utils.ts";
 import { createReadStream } from "node:fs";
-import { printProgress, svgIcon2svgFontOptions } from "./utils.ts";
+
+interface FontGenerationResult {
+  path: string;
+  timestamp: number;
+  type: FontType;
+  buffer: Buffer;
+}
 
 export async function generateSVG(
   icons: IconMeta[],
   config: Config,
 ): Promise<Buffer> {
   const fontStream: SVGIcons2SVGFontStream = new SVGIcons2SVGFontStream(
-    svgIcon2svgFontOptions,
+    config.svgIcon2svgFontOptions,
   );
-
-  let codepoint: number = config.unicode.start;
 
   for (const [index, icon] of icons.entries()) {
     const glyph = createReadStream(icon.path);
@@ -19,7 +24,7 @@ export async function generateSVG(
     // @ts-ignore
     glyph.metadata = {
       name: icon.name,
-      unicode: [String.fromCodePoint(codepoint++)],
+      unicode: [icon.char],
     };
 
     // pipeline doesn't work sadly, because of the metadata being striped

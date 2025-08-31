@@ -1,10 +1,15 @@
 @font-face {
 font-display: block;
 font-family: "{{ name }}";
-src: {{{ fontSrc }}};
+src:
+{{# each fonts }}
+  url('{{relativePath}}?{{timestamp}}') format('{{type}}'){{# unless @last }},{{/unless}}
+{{/ each }};
+font-weight: normal;
+font-style: normal;
 }
 
-[class^="{{prefix}}-"]::before {
+[class^="{{prefix}}-"]::before, [class*= "{{prefix}}-"]::before {
 font-family: {{ name }} !important;
 font-style: normal;
 font-weight: normal !important;
@@ -16,7 +21,7 @@ line-height: 1;
 }
 
 {{# each icons }}
-    .{{ ../prefix }}-{{ name }}::before {
-    content: "\\{{ codepoint }}";
-    }
+.{{ ../prefix }}-{{ name }}::before {
+  content: "\\{{ codepointHex }}";
+}
 {{/ each }}

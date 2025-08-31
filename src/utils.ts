@@ -1,14 +1,8 @@
 import { mkdir, readdir, writeFile } from "node:fs/promises";
 import { join } from "path";
 import type { Config, FontType, IconMeta } from "./types.ts";
-import type { SVGIcons2SVGFontStreamOptions } from "svgicons2svgfont";
 import Stream from "node:stream";
 import { extname } from "node:path";
-
-export const svgIcon2svgFontOptions: Partial<SVGIcons2SVGFontStreamOptions> = {
-  fontName: "test-font",
-  normalize: true,
-};
 
 export async function loadIconsMeta({
   input,
@@ -18,6 +12,7 @@ export async function loadIconsMeta({
   const taken = new Set<number>(Object.values(unicode.codepoints));
 
   const nextCodepoint = (): number => {
+    currentCodepoint++;
     // skip codepoint override
     while (taken.has(currentCodepoint)) {
       currentCodepoint++;
@@ -29,16 +24,20 @@ export async function loadIconsMeta({
     withFileTypes: true,
   });
 
-  const metas = entries
-    .filter((entry) => entry.isFile() && extname(entry.name) === ".svg")
-    .map((entry): IconMeta => {
-      const name: string = entry.name.slice(0, -4);
-      const path: string = join(input, entry.name);
-      const codepoint: number = unicode.codepoints[name] ?? nextCodepoint();
-      const char: string = String.fromCodePoint(codepoint);
+  const metas: IconMeta[] = [];
 
-      return { name, path, codepoint, char };
-    });
+  for (const entry of entries) {
+    if (!entry.isFile() || extname(entry.name) !== ".svg") {
+      continue;
+    }
+    const name: string = entry.name.slice(0, -4);
+    const path: string = join(input, entry.name);
+    const codepoint: number = unicode.codepoints[name] ?? nextCodepoint();
+    const codepointHex: string = codepoint.toString(16);
+    const char: string = String.fromCodePoint(codepoint);
+
+    metas.push({ name, path, codepoint, char, codepointHex });
+  }
 
   return metas;
 }
@@ -83,4 +82,11 @@ export function printProgress(current: number, total: number) {
   if (current === total) {
     console.log(""); // move to next line when done
   }
+}
+
+export function logMemory(label = "memory") {
+  const used = process.memoryUsage();
+  console.log(
+    `[${label}] RSS: ${(used.rss / 1024 / 1024).toFixed(2)} MB, Heap: ${(used.heapUsed / 1024 / 1024).toFixed(2)} MB`,
+  );
 }

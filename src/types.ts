@@ -1,7 +1,10 @@
+import type { SVGIcons2SVGFontStreamOptions } from "svgicons2svgfont";
+
 export interface IconMeta {
   name: string;
   path: string;
   codepoint: number;
+  codepointHex: string;
   char: string;
 }
 
@@ -28,7 +31,7 @@ export interface Config {
   input: string;
   output: string;
   clear: boolean;
-  prefix?: string;
+  prefix: string;
   unicode: {
     start: number;
     codepoints: Record<string, number>;
@@ -39,6 +42,13 @@ export interface Config {
     enabled: boolean;
     output: string;
   };
+  docs: {
+    enabled: boolean;
+    filename: string;
+    output: string;
+    template: string;
+  };
+  svgIcon2svgFontOptions: Partial<SVGIcons2SVGFontStreamOptions>;
 }
 
 export interface Options {
@@ -57,4 +67,5 @@ export interface Options {
     enabled?: boolean;
     output?: string;
   };
+  svgIcon2svgFontOptions: Partial<SVGIcons2SVGFontStreamOptions>;
 }
