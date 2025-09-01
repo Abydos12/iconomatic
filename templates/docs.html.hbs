@@ -4,14 +4,104 @@
     <meta charset="UTF-8"/>
     <title>Icons Library</title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="color-scheme" content="light dark">
     <link href="{{cssPath}}" rel="stylesheet">
+    <style>
+        *, ::after, ::before {
+            box-sizing: border-box
+        }
+
+        html {
+            font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+            line-height: 1.15;
+            -webkit-text-size-adjust: 100%;
+            tab-size: 4
+        }
+
+        body {
+            margin: 0
+        }
+
+        b, strong {
+            font-weight: bolder
+        }
+
+        code, kbd, pre, samp {
+            font-family: ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 1em
+        }
+
+        small {
+            font-size: 80%
+        }
+
+        sub, sup {
+            font-size: 75%;
+            line-height: 0;
+            position: relative;
+            vertical-align: baseline
+        }
+
+        sub {
+            bottom: -.25em
+        }
+
+        sup {
+            top: -.5em
+        }
+
+        table {
+            border-color: currentcolor
+        }
+
+        button, input, optgroup, select, textarea {
+            font-family: inherit;
+            font-size: 100%;
+            line-height: 1.15;
+            margin: 0
+        }
+
+        [type=button], [type=reset], [type=submit], button {
+            -webkit-appearance: button
+        }
+
+        legend {
+            padding: 0
+        }
+
+        progress {
+            vertical-align: baseline
+        }
+
+        ::-webkit-inner-spin-button, ::-webkit-outer-spin-button {
+            height: auto
+        }
+
+        [type=search] {
+            -webkit-appearance: textfield;
+            outline-offset: -2px
+        }
+
+        ::-webkit-search-decoration {
+            -webkit-appearance: none
+        }
+
+        ::-webkit-file-upload-button {
+            -webkit-appearance: button;
+            font: inherit
+        }
+
+        summary {
+            display: list-item
+        }
+    </style>
     <style>
         :root {
             --bg: #fafafa;
             --fg: #222;
             --card-bg: #fff;
             --card-border: #ddd;
-            --icon-size: 32px;
+            --icon-size: 3rem;
             --icon-color: #000;
         }
 
@@ -26,7 +116,6 @@
         }
 
         html {
-            box-sizing: border-box;
             overflow: auto;
             height: 100vh;
         }
@@ -39,16 +128,11 @@
             flex-direction: column;
             gap: 1rem;
 
-            background-color: var(--bg);
+            background: var(--bg);
             color: var(--fg);
-            opacity: 0.8;
-            background-image: radial-gradient(var(--fg) 0.8px, transparent 0.8px),
-            radial-gradient(var(--fg) 0.8px, var(--bg) 0.8px);
-            background-size: 32px 32px;
-            background-position: 0 0, 16px 16px;
             padding: 2rem;
-            transition: background 0.3s, color 0.3s;
-
+            transition: background 0.3s,
+            color 0.3s;
 
             &.light {
                 --bg: #fafafa;
@@ -90,7 +174,7 @@
             background: none;
             border: 1px solid var(--card-border);
             padding: 0.3rem 0.6rem;
-            border-radius: 0.4rem;
+            border-radius: 4px;
             cursor: pointer;
             color: var(--fg);
             font-size: 0.9rem;
@@ -98,25 +182,29 @@
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
             gap: 1rem;
         }
 
         .icon-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             background: var(--card-bg);
-            backdrop-filter: blur(10px) saturate(150%) hue-rotate(45deg);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-
             border: 1px solid var(--card-border);
-            border-radius: 8px;
+            border-radius: 4px;
             padding: 1rem;
-            text-align: center;
-            font-size: 0.85rem;
-        }
 
-        .icon {
-            font-size: var(--icon-size);
-            color: var(--icon-color);
+            .preview {
+                font-size: var(--icon-size);
+                color: var(--icon-color);
+                user-select: none;
+                flex: 1;
+            }
+
+            .label {
+
+            }
         }
 
         footer {
@@ -152,9 +240,12 @@
     <section class="grid">
         {{# each icons }}
             <div class="icon-card">
-                <span class="icon {{ ../prefix }}-{{ name }}"></span>
-                <!-- example icon from font -->
-                <div class="name">{{name}}</div>
+                <div class="preview">
+                    <i class="{{ ../prefix }}-{{ name }}"></i>
+                </div>
+                <div class="label">
+                    <code>{{ ../prefix }}-{{ name }}</code>
+                </div>
             </div>
         {{/ each }}
         <!-- Example card (templating tool will repeat) -->

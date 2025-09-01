@@ -73,7 +73,7 @@ const defaultConfig: Config = {
   docs: {
     enabled: true,
     filename: DEFAULT_NAME,
-    output: "",
+    output: "docs",
     template: "templates/docs.html.hbs",
   },
   svgIcon2svgFontOptions: {

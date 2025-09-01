@@ -136,26 +136,29 @@ async function main() {
     await writeFile(pathCSS, templated);
 
     // DOCS
-    const pathDocs = posix.join(
-      config.output,
-      config.docs.output,
-      `${config.docs.filename}.html`,
-    );
-    const relativeCssPathDocs = relative(dirname(pathDocs), pathCSS);
-    const docsTemplateStr: string = await readFile(
-      config.docs.template,
-      "utf8",
-    );
-    const docsTemplate = Handlebars.compile(docsTemplateStr);
+    if (config.docs.enabled) {
+      await mkdir(join(config.output, config.docs.output));
+      const pathDocs = posix.join(
+        config.output,
+        config.docs.output,
+        `${config.docs.filename}.html`,
+      );
+      const relativeCssPathDocs = relative(dirname(pathDocs), pathCSS);
+      const docsTemplateStr: string = await readFile(
+        config.docs.template,
+        "utf8",
+      );
+      const docsTemplate = Handlebars.compile(docsTemplateStr);
 
-    const docsTemplated = docsTemplate({
-      fonts,
-      icons,
-      prefix: config.prefix,
-      name: config.name,
-      cssPath: relativeCssPathDocs,
-    });
-    await writeFile(pathDocs, docsTemplated);
+      const docsTemplated = docsTemplate({
+        fonts,
+        icons,
+        prefix: config.prefix,
+        name: config.name,
+        cssPath: relativeCssPathDocs,
+      });
+      await writeFile(pathDocs, docsTemplated);
+    }
   } catch (e) {
     console.log(e);
   }
