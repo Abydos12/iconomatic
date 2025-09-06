@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { loadIconsMeta, logMemory, saveFontIfNeeded } from "./utils.ts";
 import type { IconMeta } from "./types.ts";
 import { generateSVG } from "./fonts.ts";

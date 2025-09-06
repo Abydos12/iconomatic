@@ -1,6 +1,6 @@
 {
   "name": "fontomatic",
-  "version": "0.1.0",
+  "version": "0.0.0-dev",
   "description": "A short description of your library.",
   "license": "MIT",
   "author": "Your Name <you@example.com>",
@@ -15,6 +15,9 @@
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "bin": {
+    "fontomatic": "./dist/index.js"
+  },
   "files": [
     "dist",
     "templates"
@@ -22,10 +25,12 @@
   "scripts": {
     "build": "tsup src",
     "clean": "rimraf dist",
-    "dev": "tsx src/index.ts"
+    "dev": "tsx src/index.ts",
+    "prepack": "npm run build",
+    "test:many-icons": "npm pack && cd tests/many-icons && npm install ../../fontomatic-0.0.0-dev.tgz && npx fontomatic"
   },
   "devDependencies": {
-    "@iconify/json": "^2.2.377",
+    "@iconify/json": "^2.2.381",
     "@iconify/tools": "^4.1.2",
     "@tsconfig/node-ts": "^23.6.1",
     "@tsconfig/node22": "^22.0.2",
@@ -33,7 +38,7 @@
     "@tsconfig/recommended": "^1.0.10",
     "@types/fs-extra": "^11.0.4",
     "@types/lodash.defaultsdeep": "^4.6.9",
-    "@types/node": "^24.3.0",
+    "@types/node": "^24.3.1",
     "@types/svg2ttf": "^5.0.3",
     "prettier": "^3.6.2",
     "tsup": "^8.5.0",

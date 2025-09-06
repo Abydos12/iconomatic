@@ -2,6 +2,8 @@ import { cosmiconfig } from "cosmiconfig";
 import type { Config, Options } from "./types.ts";
 
 import defaultsDeep from "lodash.defaultsdeep";
+import { join } from "path";
+import { TEMPLATES_DIRECTORY } from "./constants.js";
 
 const explorer = cosmiconfig("fontomatic");
 
@@ -24,7 +26,7 @@ const DEFAULT_NAME: string = "iconfont";
 const defaultConfig: Config = {
   name: DEFAULT_NAME,
   input: "icons",
-  output: "output",
+  output: "dist",
   clear: true,
   prefix: "icon",
   unicode: {
@@ -60,7 +62,7 @@ const defaultConfig: Config = {
       enabled: true,
       filename: DEFAULT_NAME,
       output: "",
-      template: "templates/css.hbs",
+      template: join(TEMPLATES_DIRECTORY, "css.hbs"),
     },
     json: {
       enabled: true,
@@ -74,7 +76,7 @@ const defaultConfig: Config = {
     enabled: true,
     filename: DEFAULT_NAME,
     output: "docs",
-    template: "templates/docs.html.hbs",
+    template: join(TEMPLATES_DIRECTORY, "docs.html.hbs"),
   },
   svgIcon2svgFontOptions: {
     fontName: DEFAULT_NAME,

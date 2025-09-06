@@ -11,12 +11,10 @@ export async function loadIconsMeta({
   let currentCodepoint: number = unicode.start;
   const taken = new Set<number>(Object.values(unicode.codepoints));
 
-  const nextCodepoint = (): number => {
-    currentCodepoint++;
-    // skip codepoint override
-    while (taken.has(currentCodepoint)) {
+  const nextCodepoint = () => {
+    do {
       currentCodepoint++;
-    }
+    } while (taken.has(currentCodepoint));
     return currentCodepoint;
   };
 
