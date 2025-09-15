@@ -1,22 +1,22 @@
 {
-  "name": "fontomatic",
+  "name": "iconomatic",
   "version": "0.0.0-dev",
   "description": "A short description of your library.",
   "license": "MIT",
   "author": "Your Name <you@example.com>",
-  "homepage": "https://github.com/Abydos12/fontomatic#readme",
+  "homepage": "https://github.com/Abydos12/iconomatic#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Abydos12/fontomatic.git"
+    "url": "git+https://github.com/Abydos12/iconomatic.git"
   },
   "bugs": {
-    "url": "https://github.com/Abydos12/fontomatic/issues"
+    "url": "https://github.com/Abydos12/iconomatic/issues"
   },
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "bin": {
-    "fontomatic": "./dist/index.js"
+    "iconomatic": "./dist/index.js"
   },
   "files": [
     "dist",
@@ -27,7 +27,8 @@
     "clean": "rimraf dist",
     "dev": "tsx src/index.ts",
     "prepack": "npm run build",
-    "test:many-icons": "npm pack && cd tests/many-icons && npm install ../../fontomatic-0.0.0-dev.tgz && npx fontomatic"
+    "test:many-icons": "npm pack && cd tests/many-icons && npm install ../../iconomatic-0.0.0-dev.tgz && npx iconomatic",
+    "test:custom-config": "npm pack && cd tests/custom-config && npm install ../../iconomatic-0.0.0-dev.tgz && npx iconomatic"
   },
   "devDependencies": {
     "@iconify/json": "^2.2.383",

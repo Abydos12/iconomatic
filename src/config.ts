@@ -5,7 +5,7 @@ import defaultsDeep from "lodash.defaultsdeep";
 import { join } from "path";
 import { TEMPLATES_DIRECTORY } from "./constants.js";
 
-const explorer = cosmiconfig("fontomatic");
+const explorer = cosmiconfig("iconomatic");
 
 export async function loadConfig(): Promise<Config> {
   const result = await explorer.search();

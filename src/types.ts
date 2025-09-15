@@ -73,21 +73,8 @@ export interface Config {
   svgIcon2svgFontOptions: Partial<SVGIcons2SVGFontStreamOptions>;
 }
 
-export interface Options {
-  name?: string;
-  input?: string;
-  output?: string;
-  clear?: boolean;
-  prefix?: string;
-  unicode?: {
-    start?: number;
-    codepoints?: Record<string, number>;
-  };
-  fonts?: { output?: string } & Partial<Record<FontType, FontConfig>>;
-  assets?: { output?: string } & Partial<Record<AssetType, AssetConfig>>;
-  icons?: {
-    enabled?: boolean;
-    output?: string;
-  };
-  svgIcon2svgFontOptions: Partial<SVGIcons2SVGFontStreamOptions>;
-}
+export type Options = DeepPartial<Config>;
+
+export type DeepPartial<T> = T extends object
+  ? { [K in keyof T]?: DeepPartial<T[K]> }
+  : T;

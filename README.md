@@ -1,1 +1,1 @@
-# fontomatic
+# iconomatic
