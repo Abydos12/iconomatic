@@ -1,9 +1,9 @@
 {
   "name": "iconomatic",
   "version": "0.0.0-dev",
-  "description": "A short description of your library.",
+  "description": "Automation tool to create icon library",
   "license": "MIT",
-  "author": "Your Name <you@example.com>",
+  "author": "Abydos12 <38505162+Abydos12@users.noreply.github.com>",
   "homepage": "https://github.com/Abydos12/iconomatic#readme",
   "repository": {
     "type": "git",
@@ -50,7 +50,9 @@
   "publishConfig": {
     "access": "public"
   },
-  "keywords": [],
+  "keywords": [
+    "icons"
+  ],
   "peerDependencies": {
     "cosmiconfig": "^9.0.0",
     "fs-extra": "^11.3.1",
