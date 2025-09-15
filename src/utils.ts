@@ -1,70 +1,3 @@
-import { mkdir, readdir, writeFile } from "node:fs/promises";
-import { join } from "path";
-import type { Config, FontType, IconMeta } from "./types.ts";
-import Stream from "node:stream";
-import { extname, posix } from "node:path";
-
-export async function loadIconsMeta({
-  icons: { input },
-  unicode,
-}: Config): Promise<IconMeta[]> {
-  let currentCodepoint: number = unicode.start;
-  const taken = new Set<number>(Object.values(unicode.codepoints));
-
-  const nextCodepoint = () => {
-    do {
-      currentCodepoint++;
-    } while (taken.has(currentCodepoint));
-    return currentCodepoint;
-  };
-
-  const entries = await readdir(input, {
-    withFileTypes: true,
-  });
-
-  const metas: IconMeta[] = [];
-
-  for (const entry of entries) {
-    if (!entry.isFile() || extname(entry.name) !== ".svg") {
-      continue;
-    }
-    const name: string = entry.name.slice(0, -4);
-    const path: string = join(input, entry.name);
-    const codepoint: number = unicode.codepoints[name] ?? nextCodepoint();
-    const codepointHex: string = codepoint.toString(16);
-    const char: string = String.fromCodePoint(codepoint);
-
-    metas.push({ name, path, codepoint, char, codepointHex });
-  }
-
-  return metas;
-}
-
-export async function writeFontFile(
-  font:
-    | string
-    | NodeJS.ArrayBufferView
-    | Iterable<string | NodeJS.ArrayBufferView>
-    | AsyncIterable<string | NodeJS.ArrayBufferView>
-    | Stream,
-  fontType: FontType,
-  config: Config,
-): Promise<string> {
-  const fontConfig = config.fonts[fontType];
-
-  const dir: string = posix.join(
-    config.output,
-    config.fonts.output,
-    fontConfig.output,
-  );
-  const filename: string = `${fontConfig.filename}.${fontType}`;
-
-  await mkdir(dir, { recursive: true });
-  const path: string = posix.join(dir, filename);
-  await writeFile(posix.join(dir, filename), font);
-  return path;
-}
-
 export function streamToBuffer(stream: NodeJS.ReadableStream): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     const chunks: Buffer[] = [];
@@ -81,13 +14,12 @@ export function streamToBuffer(stream: NodeJS.ReadableStream): Promise<Buffer> {
 }
 
 export function printProgress(current: number, total: number) {
-  const width = 40; // width of the progress bar in characters
+  const width = 40;
   const ratio = current / total;
   const filled = Math.round(ratio * width);
   const empty = width - filled;
   const percent = Math.round(ratio * 100);
 
-  // \r moves cursor to the start of the line
   process.stdout.write(
     `[${"=".repeat(filled)}${" ".repeat(empty)}] ${percent}% (${current}/${total})\r`,
   );

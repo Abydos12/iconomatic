@@ -1,14 +1,12 @@
 import type { Config, FontType, IconMeta } from "./types.ts";
 import { SVGIcons2SVGFontStream } from "svgicons2svgfont";
-import {
-  logMemory,
-  printProgress,
-  streamToBuffer,
-  writeFontFile,
-} from "./utils.ts";
+import { logMemory, printProgress, streamToBuffer } from "./utils.ts";
 import { createReadStream } from "node:fs";
 import svg2ttf from "svg2ttf";
 import ttf2woff2 from "ttf2woff2";
+import type Stream from "node:stream";
+import { posix } from "node:path";
+import { mkdir, writeFile } from "node:fs/promises";
 
 export async function proccessFonts(
   icons: IconMeta[],
@@ -81,4 +79,29 @@ export async function generateSVG(
   fontStream.end();
 
   return await streamToBuffer(fontStream);
+}
+
+export async function writeFontFile(
+  font:
+    | string
+    | NodeJS.ArrayBufferView
+    | Iterable<string | NodeJS.ArrayBufferView>
+    | AsyncIterable<string | NodeJS.ArrayBufferView>
+    | Stream,
+  fontType: FontType,
+  config: Config,
+): Promise<string> {
+  const fontConfig = config.fonts[fontType];
+
+  const dir: string = posix.join(
+    config.output,
+    config.fonts.output,
+    fontConfig.output,
+  );
+  const filename: string = `${fontConfig.filename}.${fontType}`;
+
+  await mkdir(dir, { recursive: true });
+  const path: string = posix.join(dir, filename);
+  await writeFile(posix.join(dir, filename), font);
+  return path;
 }
