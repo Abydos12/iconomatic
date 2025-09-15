@@ -3,7 +3,7 @@ font-display: block;
 font-family: "{{ name }}";
 src:
 {{# each fonts }}
-  url('{{relativePath}}?{{timestamp}}') format('{{type}}'){{# unless @last }},{{/unless}}
+  url('{{relativePath}}?{{../timestamp}}') format('{{type}}'){{# unless @last }},{{/unless}}
 {{/ each }};
 font-weight: normal;
 font-style: normal;

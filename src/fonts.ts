@@ -1,7 +1,56 @@
-import type { Config, IconMeta } from "./types.ts";
+import type { Config, FontType, IconMeta } from "./types.ts";
 import { SVGIcons2SVGFontStream } from "svgicons2svgfont";
-import { printProgress } from "./utils.ts";
+import {
+  logMemory,
+  printProgress,
+  streamToBuffer,
+  writeFontFile,
+} from "./utils.ts";
 import { createReadStream } from "node:fs";
+import svg2ttf from "svg2ttf";
+import ttf2woff2 from "ttf2woff2";
+
+export async function proccessFonts(
+  icons: IconMeta[],
+  config: Config,
+): Promise<Partial<Record<FontType, string>>> {
+  const results: Partial<Record<FontType, string>> = {};
+
+  console.group("Font[SVG]");
+  logMemory();
+  console.log("Generating the font...");
+  const svg = await generateSVG(icons, config);
+  console.log("Font generated");
+  if (config.fonts.svg.enabled) {
+    results.svg = await writeFontFile(svg, "svg", config);
+  }
+  logMemory();
+  console.groupEnd();
+
+  console.group("Font[TTF]");
+  logMemory();
+  console.log("Generating the font...");
+  const ttf = svg2ttf(svg.toString());
+  console.log("Font generated");
+  if (config.fonts.ttf.enabled) {
+    results.ttf = await writeFontFile(ttf.buffer, "ttf", config);
+  }
+  logMemory();
+  console.groupEnd();
+
+  console.group("Font[WOFF2]");
+  logMemory();
+  console.log("Generating the font...");
+  if (config.fonts.woff2.enabled) {
+    const woff2 = ttf2woff2(ttf.buffer);
+    results.woff2 = await writeFontFile(woff2, "woff2", config);
+  }
+  console.log("Font generated");
+  logMemory();
+  console.groupEnd();
+
+  return results;
+}
 
 export async function generateSVG(
   icons: IconMeta[],
@@ -32,19 +81,4 @@ export async function generateSVG(
   fontStream.end();
 
   return await streamToBuffer(fontStream);
-}
-
-function streamToBuffer(stream: NodeJS.ReadableStream): Promise<Buffer> {
-  return new Promise((resolve, reject) => {
-    const chunks: Buffer[] = [];
-    stream.on("data", (chunk) => {
-      chunks.push(chunk instanceof Buffer ? chunk : Buffer.from(chunk));
-    });
-    stream.on("error", (err) => {
-      reject(err);
-    });
-    stream.on("end", () => {
-      resolve(Buffer.concat(chunks));
-    });
-  });
 }

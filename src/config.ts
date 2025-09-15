@@ -21,11 +21,10 @@ export async function loadConfig(): Promise<Config> {
   return config as Config;
 }
 
-const DEFAULT_NAME: string = "iconfont";
+const DEFAULT_NAME: string = "icon-lib";
 
 const defaultConfig: Config = {
   name: DEFAULT_NAME,
-  input: "icons",
   output: "dist",
   clear: true,
   prefix: "icon",
@@ -56,22 +55,55 @@ const defaultConfig: Config = {
       output: "",
     },
   },
-  assets: {
-    output: "assets",
-    css: {
+  icons: {
+    enabled: true,
+    input: "icons",
+    output: "icons",
+    svg: {
       enabled: true,
-      filename: DEFAULT_NAME,
-      output: "",
-      template: join(TEMPLATES_DIRECTORY, "css.hbs"),
+      output: "svg",
     },
-    json: {
-      enabled: true,
-      filename: DEFAULT_NAME,
-      output: "",
-      template: "",
+    assets: {
+      output: "assets",
+      css: {
+        enabled: true,
+        filename: DEFAULT_NAME,
+        output: "",
+        template: join(TEMPLATES_DIRECTORY, "icons.css.hbs"),
+      },
+      json: {
+        enabled: true,
+        filename: "map",
+        output: "",
+        template: "",
+      },
     },
   },
-  icons: { enabled: true, output: "icons" },
+  pictograms: {
+    enabled: true,
+    input: "pictograms",
+    output: "pictograms",
+    svg: {
+      enabled: true,
+      output: "svg",
+    },
+    prefix: "picto",
+    assets: {
+      output: "assets",
+      css: {
+        enabled: true,
+        filename: DEFAULT_NAME,
+        output: "",
+        template: join(TEMPLATES_DIRECTORY, "pictograms.css.hbs"),
+      },
+      json: {
+        enabled: true,
+        filename: "map",
+        output: "",
+        template: "",
+      },
+    },
+  },
   docs: {
     enabled: true,
     filename: DEFAULT_NAME,

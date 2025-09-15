@@ -1,8 +1,0 @@
-// file: color.liquid
-color: '{{ color }}' shape: '{{ shape }}'
-
-// file: theme.liquid
-{% assign shape = 'circle' %}
-{% render 'color.liquid' %}
-{% render 'color.liquid' with 'red' %}
-{% render 'color.liquid', color: 'yellow', shape: 'square' %}

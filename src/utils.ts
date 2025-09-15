@@ -2,10 +2,10 @@ import { mkdir, readdir, writeFile } from "node:fs/promises";
 import { join } from "path";
 import type { Config, FontType, IconMeta } from "./types.ts";
 import Stream from "node:stream";
-import { extname } from "node:path";
+import { extname, posix } from "node:path";
 
 export async function loadIconsMeta({
-  input,
+  icons: { input },
   unicode,
 }: Config): Promise<IconMeta[]> {
   let currentCodepoint: number = unicode.start;
@@ -40,7 +40,7 @@ export async function loadIconsMeta({
   return metas;
 }
 
-export async function saveFontIfNeeded(
+export async function writeFontFile(
   font:
     | string
     | NodeJS.ArrayBufferView
@@ -49,20 +49,35 @@ export async function saveFontIfNeeded(
     | Stream,
   fontType: FontType,
   config: Config,
-): Promise<void> {
+): Promise<string> {
   const fontConfig = config.fonts[fontType];
 
-  if (!fontConfig.enabled) {
-    return;
-  }
+  const dir: string = posix.join(
+    config.output,
+    config.fonts.output,
+    fontConfig.output,
+  );
+  const filename: string = `${fontConfig.filename}.${fontType}`;
 
-  const output = join(config.output, config.fonts.output, fontConfig.output);
-  const filename = `${fontConfig.filename}.${fontType}`;
+  await mkdir(dir, { recursive: true });
+  const path: string = posix.join(dir, filename);
+  await writeFile(posix.join(dir, filename), font);
+  return path;
+}
 
-  await mkdir(output, { recursive: true });
-  const path = join(output, filename);
-  await writeFile(join(output, filename), font);
-  console.log(`Saved: ${path}`);
+export function streamToBuffer(stream: NodeJS.ReadableStream): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    const chunks: Buffer[] = [];
+    stream.on("data", (chunk) => {
+      chunks.push(chunk instanceof Buffer ? chunk : Buffer.from(chunk));
+    });
+    stream.on("error", (err) => {
+      reject(err);
+    });
+    stream.on("end", () => {
+      resolve(Buffer.concat(chunks));
+    });
+  });
 }
 
 export function printProgress(current: number, total: number) {

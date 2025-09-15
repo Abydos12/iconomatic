@@ -1,15 +1,14 @@
 #!/usr/bin/env node
-import { loadIconsMeta, logMemory, saveFontIfNeeded } from "./utils.ts";
+import { loadIconsMeta, logMemory } from "./utils.ts";
 import type { IconMeta } from "./types.ts";
-import { generateSVG } from "./fonts.ts";
-import svg2ttf from "svg2ttf";
-import ttf2woff2 from "ttf2woff2";
+import { proccessFonts } from "./fonts.ts";
 import { loadConfig } from "./config.ts";
 import { join } from "path";
-import { copyFile, mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import fs from "fs-extra";
 import Handlebars from "handlebars";
 import { dirname, posix, relative } from "node:path";
+import { writeIconsFiles, writeIconsJsonMap } from "./icons.js";
 
 export type { Config } from "./types.ts";
 
@@ -30,100 +29,33 @@ async function main() {
   logMemory("icons loaded");
 
   try {
-    console.group("Font[SVG]");
-    logMemory();
-    console.log("Generating the font...");
-    const svg = await generateSVG(icons, config);
-    console.log("Font generated");
-    await saveFontIfNeeded(svg, "svg", config);
-    logMemory();
-    console.groupEnd();
+    const fontResults = await proccessFonts(icons, config);
 
-    console.group("Font[TTF]");
-    logMemory();
-    console.log("Generating the font...");
-    const ttf = svg2ttf(svg.toString());
-    console.log("Font generated");
-    await saveFontIfNeeded(ttf.buffer, "ttf", config);
-    logMemory();
-    console.groupEnd();
-
-    console.group("Font[WOFF2]");
-    logMemory();
-    console.log("Generating the font...");
-    const woff2 = ttf2woff2(ttf.buffer);
-    console.log("Font generated");
-    await saveFontIfNeeded(woff2, "woff2", config);
-    logMemory();
-    console.groupEnd();
-
-    if (config.icons.enabled) {
-      console.group("ICONS");
-      logMemory();
-      await mkdir(join(config.output, config.icons.output), {
-        recursive: true,
-      });
-      console.time("Generating icons");
-      await Promise.all(
-        icons.map((icon) =>
-          copyFile(
-            icon.path,
-            join(config.output, config.icons.output, `${icon.name}.svg`),
-          ),
-        ),
-      );
-      console.timeEnd("Generating icons");
-      logMemory();
-      console.groupEnd();
+    if (config.icons.svg.enabled) {
+      await writeIconsFiles(icons, config);
     }
 
-    console.group("JSON");
-    logMemory();
-    const output = join(
-      config.output,
-      config.assets.output,
-      config.assets.json.output,
-    );
-    const filename = `${config.assets.json.filename}.json`;
+    if (config.icons.assets.json.enabled) {
+      await writeIconsJsonMap(icons, config);
+    }
 
-    await mkdir(output, { recursive: true });
-    const path = join(output, filename);
-    await writeFile(join(output, filename), JSON.stringify(icons));
-    console.log(`Saved: ${path}`);
-    logMemory();
-    console.groupEnd();
-
-    const pathWoff2 = posix.join(
-      config.output,
-      config.fonts.output,
-      config.fonts.woff2.output,
-      `${config.fonts.woff2.filename}.woff2`,
-    );
     const pathCSS = posix.join(
       config.output,
-      config.assets.output,
-      config.assets.css.output,
-      `${config.assets.css.filename}.css`,
+      config.icons.output,
+      config.icons.assets.output,
+      config.icons.assets.css.output,
+      `${config.icons.assets.css.filename}.css`,
     );
-    const relativePath = posix.relative(dirname(pathCSS), pathWoff2);
 
-    const fonts = [
-      {
-        path: posix.join(
-          config.output,
-          config.fonts.output,
-          config.fonts.woff2.output,
-          `${config.fonts.woff2.filename}.woff2`,
-        ),
-        relativePath,
-        type: "woff2",
-        timestamp: Date.now(),
-      },
-    ];
+    const fonts = Object.entries(fontResults).map(([type, path]) => ({
+      type,
+      path,
+      relativePath: posix.relative(dirname(pathCSS), path),
+    }));
 
     // CSS
     const templateStr: string = await readFile(
-      config.assets.css.template,
+      config.icons.assets.css.template,
       "utf8",
     );
     const template = Handlebars.compile(templateStr);
@@ -133,6 +65,7 @@ async function main() {
       icons,
       prefix: config.prefix,
       name: config.name,
+      timestamp: Date.now(),
     });
     await writeFile(pathCSS, templated);
 

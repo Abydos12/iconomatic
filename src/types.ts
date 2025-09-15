@@ -8,6 +8,13 @@ export interface IconMeta {
   char: string;
 }
 
+export interface PictogramMeta {
+  name: string;
+  path: string;
+  content: string;
+  base64: string;
+}
+
 const fontTypes = ["svg", "ttf", "woff", "woff2"] as const;
 export type FontType = (typeof fontTypes)[number];
 
@@ -28,7 +35,6 @@ export type AssetConfig = {
 
 export interface Config {
   name: string;
-  input: string;
   output: string;
   clear: boolean;
   prefix: string;
@@ -37,10 +43,26 @@ export interface Config {
     codepoints: Record<string, number>;
   };
   fonts: { output: string } & Record<FontType, FontConfig>;
-  assets: { output: string } & Record<AssetType, AssetConfig>;
   icons: {
     enabled: boolean;
+    input: string;
     output: string;
+    svg: {
+      enabled: boolean;
+      output: string;
+    };
+    assets: { output: string } & Record<AssetType, AssetConfig>;
+  };
+  pictograms: {
+    enabled: boolean;
+    input: string;
+    output: string;
+    svg: {
+      enabled: boolean;
+      output: string;
+    };
+    prefix: string;
+    assets: { output: string } & Record<AssetType, AssetConfig>;
   };
   docs: {
     enabled: boolean;
