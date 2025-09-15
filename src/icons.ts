@@ -1,8 +1,16 @@
-import { extname } from "node:path";
+import { extname, posix } from "node:path";
 import type { Config, IconMeta } from "./types.js";
 import { logMemory } from "./utils.js";
-import { copyFile, mkdir, readdir, writeFile } from "node:fs/promises";
+import {
+  copyFile,
+  mkdir,
+  readdir,
+  readFile,
+  writeFile,
+} from "node:fs/promises";
 import { join } from "path";
+import Handlebars from "handlebars";
+import type { FontResults } from "./fonts.js";
 
 export async function loadIconsMeta({
   icons: { input },
@@ -91,4 +99,40 @@ export async function writeIconsJsonMap(
   console.log(`Saved: ${path}`);
   logMemory();
   console.groupEnd();
+}
+
+export async function writeIconsCss(
+  icons: IconMeta[],
+  fontResults: FontResults,
+  config: Config,
+): Promise<string> {
+  const templateStr: string = await readFile(
+    config.icons.assets.css.template,
+    "utf8",
+  );
+  const template = Handlebars.compile(templateStr);
+
+  const dir = posix.join(
+    config.output,
+    config.icons.output,
+    config.icons.assets.output,
+    config.icons.assets.css.output,
+  );
+  const path = posix.join(dir, `${config.icons.assets.css.filename}.css`);
+
+  const fonts = Object.entries(fontResults).map(([type, fontPath]) => ({
+    type,
+    path,
+    relativePath: posix.relative(dir, fontPath),
+  }));
+
+  const templated = template({
+    fonts,
+    icons,
+    prefix: config.prefix,
+    name: config.name,
+    timestamp: Date.now(),
+  });
+  await writeFile(path, templated);
+  return path;
 }

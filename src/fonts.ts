@@ -8,11 +8,13 @@ import type Stream from "node:stream";
 import { posix } from "node:path";
 import { mkdir, writeFile } from "node:fs/promises";
 
+export type FontResults = Partial<Record<FontType, string>>;
+
 export async function proccessFonts(
   icons: IconMeta[],
   config: Config,
-): Promise<Partial<Record<FontType, string>>> {
-  const results: Partial<Record<FontType, string>> = {};
+): Promise<FontResults> {
+  const results: FontResults = {};
 
   console.group("Font[SVG]");
   logMemory();
