@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { logMemory } from "./utils.ts";
-import type { IconMeta } from "./types.ts";
+import type { IconMeta, PictogramMeta } from "./types.ts";
 import { proccessFonts } from "./fonts.ts";
 import { loadConfig } from "./config.ts";
 import fs from "fs-extra";
@@ -11,6 +11,7 @@ import {
   writeIconsJsonMap,
 } from "./icons.js";
 import { writeDocs } from "./docs.js";
+import { loadPictogramsMeta, writePictogramsCss } from "./pictograms.js";
 
 export type { Config } from "./types.ts";
 
@@ -44,8 +45,17 @@ async function main() {
     await writeIconsCss(icons, fontResults, config);
   }
 
+  const pictograms: PictogramMeta[] = [];
+  if (config.pictograms.enabled) {
+    pictograms.push(...(await loadPictogramsMeta(config)));
+
+    if (config.pictograms.assets.css.enabled) {
+      await writePictogramsCss(pictograms, config);
+    }
+  }
+
   if (config.docs.enabled) {
-    await writeDocs(icons, config);
+    await writeDocs({ icons, pictograms, config });
   }
 
   logMemory();

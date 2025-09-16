@@ -1,27 +1,17 @@
-@font-face {
-font-display: block;
-font-family: "{{ name }}";
-src:
-{{# each fonts }}
-  url('{{relativePath}}?{{timestamp}}') format('{{type}}'){{# unless @last }},{{/unless}}
-{{/ each }};
-font-weight: normal;
-font-style: normal;
+[class^="{{prefix}}-"],
+[class*=" {{prefix}}-"] {
+display: inline-block;
+width: 1em;
+height: 1em;
+background-repeat: no-repeat;
+background-position: center;
+background-size: contain;
+vertical-align: middle;
 }
 
-[class^="{{prefix}}-"]::before, [class*= "{{prefix}}-"]::before {
-font-family: {{ name }} !important;
-font-style: normal;
-font-weight: normal !important;
-font-variant: normal;
-text-transform: none;
-line-height: 1;
--webkit-font-smoothing: antialiased;
--moz-osx-font-smoothing: grayscale;
-}
 
-{{# each icons }}
-.{{ ../prefix }}-{{ name }}::before {
-  content: "\\{{ codepointHex }}";
+{{# each pictograms }}
+.{{ ../prefix }}-{{ name }} {
+  background-image: url("{{{ cssUrl }}}");
 }
 {{/ each }}

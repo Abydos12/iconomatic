@@ -5,7 +5,8 @@
     <title>Icons Library</title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <meta name="color-scheme" content="light dark">
-    <link href="{{cssPath}}" rel="stylesheet">
+    <link href="{{iconsCssPath}}" rel="stylesheet">
+    <link href="{{pictogramsCssPath}}" rel="stylesheet">
     <style>
         *, ::after, ::before {
             box-sizing: border-box
@@ -237,14 +238,28 @@
 </header>
 
 <main>
+    <h2>Icons</h2>
     <section class="grid">
         {{# each icons }}
             <div class="icon-card">
                 <div class="preview">
-                    <i class="{{ ../prefix }}-{{ name }}"></i>
+                    <i class="{{ ../iconsPrefix }}-{{ name }}"></i>
                 </div>
                 <div class="label">
-                    <code>{{ ../prefix }}-{{ name }}</code>
+                    <code>{{ ../iconsPrefix }}-{{ name }}</code>
+                </div>
+            </div>
+        {{/ each }}
+    </section>
+    <h2>Pictograms</h2>
+    <section class="grid">
+        {{# each pictograms }}
+            <div class="icon-card">
+                <div class="preview">
+                    <span class="{{ ../pictogramsPrefix }}-{{ name }}"></span>
+                </div>
+                <div class="label">
+                    <code>{{ ../pictogramsPrefix }}-{{ name }}</code>
                 </div>
             </div>
         {{/ each }}

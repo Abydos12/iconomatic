@@ -133,6 +133,7 @@ export async function writeIconsCss(
     name: config.name,
     timestamp: Date.now(),
   });
+  await mkdir(dir, { recursive: true });
   await writeFile(path, templated);
   return path;
 }

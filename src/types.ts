@@ -11,8 +11,7 @@ export interface IconMeta {
 export interface PictogramMeta {
   name: string;
   path: string;
-  content: string;
-  base64: string;
+  cssUrl: string;
 }
 
 const fontTypes = ["svg", "ttf", "woff", "woff2"] as const;
