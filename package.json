@@ -31,18 +31,18 @@
     "test:custom-config": "npm pack && cd tests/custom-config && npm install ../../iconomatic-0.0.0-dev.tgz && npx iconomatic"
   },
   "devDependencies": {
-    "@iconify/json": "^2.2.383",
-    "@iconify/tools": "^4.1.2",
+    "@iconify/json": "^2.2.390",
+    "@iconify/tools": "^4.1.4",
     "@tsconfig/node-ts": "^23.6.1",
     "@tsconfig/node24": "^24.0.1",
     "@types/fs-extra": "^11.0.4",
     "@types/lodash.defaultsdeep": "^4.6.9",
-    "@types/node": "^24.3.3",
+    "@types/node": "^24.6.1",
     "@types/svg2ttf": "^5.0.3",
     "prettier": "^3.6.2",
     "tsup": "^8.5.0",
-    "tsx": "^4.20.5",
-    "typescript": "^5.9.2"
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
   },
   "engines": {
     "node": ">=18"
