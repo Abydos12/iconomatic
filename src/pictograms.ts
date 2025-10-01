@@ -48,7 +48,7 @@ export async function writePictogramsCss(
 
   const templated = template({
     pictograms,
-    prefix: `${config.prefix}-${config.pictograms.prefix}`,
+    prefix: config.pictograms.prefix,
     name: config.name,
   });
   await mkdir(dir, { recursive: true });

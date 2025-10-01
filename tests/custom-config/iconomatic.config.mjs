@@ -38,7 +38,6 @@ const options = {
     svg: {
       enabled: true,
     },
-    prefix: "picto",
     assets: {
       output: "assets",
       css: {

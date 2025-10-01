@@ -27,7 +27,6 @@ const defaultConfig: Config = {
   name: DEFAULT_NAME,
   output: "dist",
   clear: true,
-  prefix: "icon",
   unicode: {
     start: 0xf0000,
     codepoints: {},
@@ -59,6 +58,7 @@ const defaultConfig: Config = {
     enabled: true,
     input: "icons",
     output: "icons",
+    prefix: "icon",
     svg: {
       enabled: true,
       output: "svg",

@@ -32,37 +32,29 @@ export type AssetConfig = {
   template: string;
 };
 
+interface IconsConfig {
+  enabled: boolean;
+  input: string;
+  output: string;
+  prefix: string;
+  svg: {
+    enabled: boolean;
+    output: string;
+  };
+  assets: { output: string } & Record<AssetType, AssetConfig>;
+}
+
 export interface Config {
   name: string;
   output: string;
   clear: boolean;
-  prefix: string;
   unicode: {
     start: number;
     codepoints: Record<string, number>;
   };
   fonts: { output: string } & Record<FontType, FontConfig>;
-  icons: {
-    enabled: boolean;
-    input: string;
-    output: string;
-    svg: {
-      enabled: boolean;
-      output: string;
-    };
-    assets: { output: string } & Record<AssetType, AssetConfig>;
-  };
-  pictograms: {
-    enabled: boolean;
-    input: string;
-    output: string;
-    svg: {
-      enabled: boolean;
-      output: string;
-    };
-    prefix: string;
-    assets: { output: string } & Record<AssetType, AssetConfig>;
-  };
+  icons: IconsConfig;
+  pictograms: IconsConfig;
   docs: {
     enabled: boolean;
     filename: string;

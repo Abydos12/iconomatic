@@ -129,7 +129,7 @@ export async function writeIconsCss(
   const templated = template({
     fonts,
     icons,
-    prefix: config.prefix,
+    prefix: config.icons.prefix,
     name: config.name,
     timestamp: Date.now(),
   });

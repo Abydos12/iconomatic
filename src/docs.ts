@@ -41,11 +41,11 @@ export async function writeDocs({
   const docsTemplated = docsTemplate({
     name: config.name,
     icons,
-    iconsPrefix: config.prefix,
+    iconsPrefix: config.icons.prefix,
     iconsCssPath: relativeIconsCssPath,
     pictograms,
     pictogramsEnabled: config.pictograms.enabled,
-    pictogramsPrefix: `${config.prefix}-${config.pictograms.prefix}`,
+    pictogramsPrefix: config.pictograms.prefix,
     pictogramsCssPath: relativePictogramsCssPath,
   });
   await mkdir(dir);
