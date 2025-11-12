@@ -60,6 +60,7 @@
     "lodash.defaultsdeep": "^4.6.1",
     "svg2ttf": "^6.0.3",
     "svgicons2svgfont": "^15.0.1",
-    "ttf2woff2": "^8.0.0"
+    "ttf2woff2": "^8.0.0",
+    "valibot": "^1.1.0"
   }
 }

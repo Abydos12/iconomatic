@@ -1,7 +1,6 @@
 import { cosmiconfig } from "cosmiconfig";
-import type { Config, Options } from "./types.ts";
-
-import defaultsDeep from "lodash.defaultsdeep";
+import { type Config, ConfigSchema, type Options } from "./types.ts";
+import * as v from "valibot";
 import { join } from "path";
 import { TEMPLATES_DIRECTORY } from "./constants.js";
 
@@ -14,9 +13,7 @@ export async function loadConfig(): Promise<Config> {
     console.log(`Found config file at ${result.filepath}`);
   }
 
-  const config: Options = result?.config ?? {};
-
-  defaultsDeep(config, defaultConfig);
+  const config = v.parse(ConfigSchema, result?.config);
 
   return config as Config;
 }

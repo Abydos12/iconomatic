@@ -13,7 +13,7 @@ import {
 import { writeDocs } from "./docs.js";
 import { loadPictogramsMeta, writePictogramsCss } from "./pictograms.js";
 
-export type { Config } from "./types.ts";
+export type { Config, ConfigInput } from "./types.ts";
 
 async function main() {
   console.log("START");
