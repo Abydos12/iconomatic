@@ -19,7 +19,7 @@ export interface PictogramMeta {
 
 const fontTypes = ["svg", "ttf", "woff", "woff2"] as const;
 export type FontType = (typeof fontTypes)[number];
-type AssetType = "css" | "json";
+export type AssetType = "css" | "json";
 
 export type FontConfig = {
   enabled: boolean;
@@ -121,3 +121,14 @@ export type Options = DeepPartial<Config>;
 export type DeepPartial<T> = T extends object
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : T;
+
+export interface DocTemplateContext {
+  name: string;
+  icons: IconMeta[];
+  iconsPrefix: string;
+  iconsCssPath: string;
+  pictograms: PictogramMeta[];
+  pictogramsEnabled: boolean;
+  pictogramsPrefix: string;
+  pictogramsCssPath: string;
+}

@@ -1,3 +1,6 @@
+import type { AssetType, Config } from "./types.ts";
+import { posix } from "node:path";
+
 export function streamToBuffer(stream: NodeJS.ReadableStream): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     const chunks: Buffer[] = [];
@@ -11,6 +14,20 @@ export function streamToBuffer(stream: NodeJS.ReadableStream): Promise<Buffer> {
       resolve(Buffer.concat(chunks));
     });
   });
+}
+
+export function assetPath(
+  config: Config,
+  collection: "icons" | "pictograms",
+  asset: AssetType,
+) {
+  return posix.join(
+    config.output,
+    config[collection].output,
+    config[collection].assets.output,
+    config[collection].assets[asset].output,
+    `${config[collection].assets[asset].filename}.${asset}`,
+  );
 }
 
 export function printProgress(current: number, total: number) {
