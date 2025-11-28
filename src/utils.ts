@@ -1,4 +1,4 @@
-import type { AssetType, Config } from "./types.ts";
+import type { AssetType, ConfigOutput, FontCollectionConfig } from "./types.ts";
 import { posix } from "node:path";
 
 export function streamToBuffer(stream: NodeJS.ReadableStream): Promise<Buffer> {
@@ -17,8 +17,8 @@ export function streamToBuffer(stream: NodeJS.ReadableStream): Promise<Buffer> {
 }
 
 export function assetPath(
-  config: Config,
-  collection: "icons" | "pictograms",
+  config: ConfigOutput,
+  collection: string,
   asset: AssetType,
 ) {
   return posix.join(
@@ -51,4 +51,25 @@ export function logMemory(label = "memory") {
   console.log(
     `[${label}] RSS: ${(used.rss / 1024 / 1024).toFixed(2)} MB, Heap: ${(used.heapUsed / 1024 / 1024).toFixed(2)} MB`,
   );
+}
+
+export function getFontCollectionPaths(
+  config: ConfigOutput,
+  collection: FontCollectionConfig,
+) {
+  const fontsDir = posix.join(
+    config.output,
+    collection.output,
+    collection.fonts.output,
+  );
+
+  return {
+    collection: posix.join(config.output, collection.output),
+    fonts: {
+      svg: posix.join(fontsDir, `${collection.name}.svg`),
+      ttf: posix.join(fontsDir, `${collection.name}.ttf`),
+      woff2: posix.join(fontsDir, `${collection.name}.woff2`),
+    },
+    css: posix.join(config.output, collection.output, `${collection.name}.css`),
+  };
 }
