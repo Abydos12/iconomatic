@@ -4,6 +4,7 @@ import { TEMPLATES_DIRECTORY } from "./constants.js";
 
 export interface IconMeta {
   name: string;
+  className: string;
   path: string;
   codepoint: number;
   codepointHex: string;
@@ -12,11 +13,10 @@ export interface IconMeta {
 
 export interface PictogramMeta {
   name: string;
+  className: string;
   path: string;
   cssUrl: string;
 }
-
-export type AssetType = "css" | "json";
 
 const FontsConfigSchema = v.object({
   output: v.exactOptional(v.string(), "fonts"),
@@ -26,13 +26,6 @@ const FontsConfigSchema = v.object({
 });
 
 const PathSchema = v.pipe(v.string(), v.transform(resolve));
-const AssetConfigSchema = v.object({
-  output: v.exactOptional(v.string(), ""),
-  template: v.exactOptional(
-    PathSchema,
-    join(TEMPLATES_DIRECTORY, "docs.html.hbs"),
-  ),
-});
 
 const UnicodeSchema = v.object({
   start: v.exactOptional(v.pipe(v.number(), v.integer()), 0xf0000),
@@ -76,7 +69,7 @@ const PictogramsCollectionConfigSchema = v.object({
     v.object({
       css: v.exactOptional(
         PathSchema,
-        join(TEMPLATES_DIRECTORY, "icons.css.hbs"),
+        join(TEMPLATES_DIRECTORY, "pictograms.css.hbs"),
       ),
     }),
     {},
@@ -92,9 +85,11 @@ const CollectionConfigSchema = v.variant("type", [
   PictogramsCollectionConfigSchema,
 ]);
 
+export type CollectionConfig = v.InferOutput<typeof CollectionConfigSchema>;
+
 const DocsConfigSchema = v.object({
   enabled: v.exactOptional(v.boolean(), true),
-  filename: v.exactOptional(v.string(), "docs"),
+  filename: v.exactOptional(v.string(), "index"),
   output: v.exactOptional(v.string(), "docs"),
   template: v.exactOptional(
     PathSchema,
@@ -103,10 +98,10 @@ const DocsConfigSchema = v.object({
 });
 
 export const ConfigSchema = v.object({
-  name: v.exactOptional(v.string(), "icon-lib"),
+  name: v.string(),
   output: v.exactOptional(v.string(), "dist"),
   clear: v.exactOptional(v.boolean(), true),
-  prefix: v.exactOptional(v.string(), "z"),
+  prefix: v.string(),
   collections: v.array(CollectionConfigSchema),
   docs: v.exactOptional(DocsConfigSchema, {}),
 });
@@ -120,4 +115,11 @@ export interface Result {
 
 export interface DocTemplateContext {
   name: string;
+  collections: {
+    name: string;
+    type: CollectionConfig["type"];
+    prefix: string;
+    icons: { name: string; className: string }[];
+    css: string;
+  }[];
 }

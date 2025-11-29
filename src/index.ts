@@ -2,7 +2,11 @@
 import { logMemory } from "./utils.ts";
 import { loadConfig } from "./config.ts";
 import fs from "fs-extra";
-import { processFontCollection } from "./collections.js";
+import {
+  processFontCollection,
+  processPictogramCollection,
+} from "./collections.js";
+import { writeDocs } from "./docs.js";
 
 export type { ConfigInput } from "./types.ts";
 
@@ -15,22 +19,29 @@ async function main() {
     await fs.emptyDir(config.output);
   }
 
-  const collectionResults = [];
+  const results: Record<string, { name: string; className: string }[]> = {};
 
   for (const collection of config.collections) {
     switch (collection.type) {
       case "FONT": {
-        await processFontCollection(config, collection);
+        results[collection.name] = await processFontCollection(
+          config,
+          collection,
+        );
         break;
       }
       case "PICTOGRAMS": {
+        results[collection.name] = await processPictogramCollection(
+          config,
+          collection,
+        );
         break;
       }
     }
   }
 
   if (config.docs.enabled) {
-    // await writeDocs({ icons, pictograms, config });
+    await writeDocs(config, results);
   }
 
   logMemory();

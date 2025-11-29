@@ -1,6 +1,6 @@
 {
   "extends": [
-    "@tsconfig/node24/tsconfig.json",
+    "@tsconfig/node-lts/tsconfig.json",
     "@tsconfig/node-ts/tsconfig.json",
     "@tsconfig/strictest/tsconfig.json"
   ],
@@ -11,15 +11,6 @@
     "declarationMap": true,
     "sourceMap": true,
 
-    "strict": true,
-    "noImplicitAny": true,
-    "noImplicitThis": true,
-    "alwaysStrict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
     "resolveJsonModule": true
   },
   "include": ["src"],
