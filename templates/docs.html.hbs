@@ -99,16 +99,33 @@
     </style>
     <style>
         :root {
+            --icon-size: 3rem;
+        }
+
+
+        @media (prefers-color-scheme: light) {
+            :root {
+                color-scheme: light;
+                --bg: #fafafa;
+                --fg: #222;
+                --card-bg: #fff;
+                --card-border: #ddd;
+                --icon-color: #000;
+            }
+        }
+
+        :root[data-theme="light"] {
+            color-scheme: light;
             --bg: #fafafa;
             --fg: #222;
             --card-bg: #fff;
             --card-border: #ddd;
-            --icon-size: 3rem;
             --icon-color: #000;
         }
 
         @media (prefers-color-scheme: dark) {
             :root {
+                color-scheme: dark;
                 --bg: #1e1e1e;
                 --fg: #eee;
                 --card-bg: #2a2a2a;
@@ -117,6 +134,16 @@
             }
         }
 
+        :root[data-theme="dark"] {
+            color-scheme: dark;
+            --bg: #1e1e1e;
+            --fg: #eee;
+            --card-bg: #2a2a2a;
+            --card-border: #444;
+            --icon-color: #fff;
+        }
+    </style>
+    <style>
         html {
             overflow: auto;
             height: 100vh;
@@ -135,22 +162,6 @@
             padding: 2rem;
             transition: background 0.3s,
             color 0.3s;
-
-            &.light {
-                color-scheme: light;
-                --bg: #fafafa;
-                --fg: #222;
-                --card-bg: #fff;
-                --card-border: #ddd;
-            }
-
-            &.dark {
-                color-scheme: dark;
-                --bg: #1e1e1e;
-                --fg: #eee;
-                --card-bg: #2a2a2a;
-                --card-border: #444;
-            }
         }
 
         header {
@@ -189,6 +200,7 @@
             grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
             gap: 1rem;
         }
+
 
         .icon-card {
             display: flex;
@@ -267,50 +279,41 @@
     const toggle = document.getElementById("theme-toggle");
     const sizeControl = document.getElementById("size-control");
     const colorControl = document.getElementById("color-control");
+    const defaultTheme = localStorage.getItem('theme');
 
-    const prefersDark = window.matchMedia(
-            "(prefers-color-scheme: dark)",
-    ).matches;
-
-    // --- Apply initial theme ---
-    if (prefersDark) {
-        document.body.classList.add("dark");
-        document.documentElement.style.setProperty("--icon-color", "#fff");
-        colorControl.value = "#ffffff";
-    } else {
-        document.body.classList.add("light");
-        document.documentElement.style.setProperty("--icon-color", "#000");
-        colorControl.value = "#000000";
+    if (defaultTheme) {
+        applyTheme(defaultTheme);
     }
 
-    // --- Theme toggle ---
-    toggle.addEventListener("click", () => {
-        if (document.body.classList.contains("dark")) {
-            document.body.classList.replace("dark", "light");
-            document.documentElement.style.setProperty("--icon-color", "#000");
-            colorControl.value = "#000000";
-        } else {
-            document.body.classList.replace("light", "dark");
-            document.documentElement.style.setProperty("--icon-color", "#fff");
+    function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+        if (theme === 'dark') {
+            applyIconColor("#ffffff");
             colorControl.value = "#ffffff";
+        } else {
+            applyIconColor("#000000");
+            colorControl.value = "#000000";
         }
-    });
+    }
 
-    // --- Size control ---
-    sizeControl.addEventListener("change", (e) => {
-        document.documentElement.style.setProperty(
-                "--icon-size",
-                e.target.value,
-        );
-    });
+    function toggleTheme() {
+        const current = document.documentElement.getAttribute('data-theme');
+        const next = current === 'dark' ? 'light' : 'dark';
+        applyTheme(next);
+    }
 
-    // --- Color control ---
-    colorControl.addEventListener("input", (e) => {
-        document.documentElement.style.setProperty(
-                "--icon-color",
-                e.target.value,
-        );
-    });
+    function applyIconSize(size) {
+        document.documentElement.style.setProperty("--icon-size", size);
+    }
+
+    function applyIconColor(color) {
+        document.documentElement.style.setProperty("--icon-color", color);
+    }
+
+    toggle.addEventListener("click", toggleTheme);
+    sizeControl.addEventListener("change", (e) => applyIconSize(e.target.value));
+    colorControl.addEventListener("input", (e) => applyIconColor(e.target.value));
 </script>
 </body>
 </html>

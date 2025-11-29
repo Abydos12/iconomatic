@@ -109,10 +109,6 @@ export const ConfigSchema = v.object({
 export type ConfigInput = v.InferInput<typeof ConfigSchema>;
 export type ConfigOutput = v.InferOutput<typeof ConfigSchema>;
 
-export interface Result {
-  icons: IconMeta[];
-}
-
 export interface DocTemplateContext {
   name: string;
   collections: {
