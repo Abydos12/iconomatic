@@ -1,30 +1,43 @@
-import { readFile } from "node:fs/promises";
 import { exportToDirectory, IconSet } from "@iconify/tools";
-import { locate } from "@iconify/json";
-
-const outputDir = "flags";
+import { lookupCollection } from "@iconify/json";
+import type { IconifyJSON } from "@iconify/types";
+import { join } from "path";
 
 async function main(): Promise<void> {
-  // Locate icons
-  const filename = locate("flag");
+  const collections = [
+    new IconSet(await collectFluentColor()),
+    new IconSet(await collectMaterialSymbols()),
+  ];
 
-  // Load icon set
-  const collection = JSON.parse(await readFile(filename, "utf8"));
-
-  collection.icons = Object.fromEntries(
-    Object.entries(collection.icons)
-      .filter(([key, _]) => key.endsWith("4x3"))
-      .map(([key, data]) => [key.slice(0, -4), data]),
-  );
-
-  // Create IconSet instance
-  const iconSet = new IconSet(collection);
-
-  // Export all icons
-  await exportToDirectory(iconSet, {
-    target: outputDir,
-    log: true,
-  });
+  for (const collection of collections) {
+    await exportToDirectory(collection, {
+      target: join("data", collection.info.name),
+      log: true,
+    });
+  }
 }
 
-main();
+async function collectFluentColor(): Promise<IconifyJSON> {
+  const collection = await lookupCollection("fluent-color");
+  collection.icons = Object.fromEntries(
+    Object.entries(collection.icons)
+      .filter(([key, _]) => key.endsWith("-16"))
+      .map(([key, data]) => [key.slice(0, -"-16".length), data]),
+  );
+  return collection;
+}
+async function collectMaterialSymbols(): Promise<IconifyJSON> {
+  const collection = await lookupCollection("material-symbols");
+  collection.icons = Object.fromEntries(
+    Object.entries(collection.icons)
+      .filter(
+        ([key, _]) =>
+          key.endsWith("-rounded") && !key.endsWith("-outline-rounded"),
+      )
+      .map(([key, data]) => [key.slice(0, -"-rounded".length), data]),
+  );
+  delete collection.aliases;
+  return collection;
+}
+
+await main();

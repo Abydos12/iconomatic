@@ -20,6 +20,7 @@
             tab-size: 4
         }
 
+        h1, h2, h3, h4, h5, h6,
         body {
             margin: 0
         }
@@ -164,6 +165,12 @@
             color 0.3s;
         }
 
+        main {
+            display: flex;
+            flex-direction: column;
+            gap: .5rem;
+        }
+
         header {
             display: flex;
             justify-content: space-between;
@@ -183,7 +190,7 @@
             align-items: center;
         }
 
-        button.toggle,
+        button,
         select,
         input[type="color"] {
             background: none;
@@ -192,36 +199,63 @@
             border-radius: 4px;
             cursor: pointer;
             color: var(--fg);
-            font-size: 0.9rem;
+            /*font-size: 0.9rem;*/
         }
 
         .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+            display: flex;
+            flex-wrap: wrap;
             gap: 1rem;
+
+            > * {
+                flex: 1 1 auto;
+                text-wrap: nowrap;
+            }
         }
 
-
         .icon-card {
-            display: flex;
+            display: inline-flex;
             flex-direction: column;
             align-items: center;
             background: var(--card-bg);
             border: 1px solid var(--card-border);
             border-radius: 4px;
-            padding: 1rem;
+            padding: .5rem;
 
-            .preview {
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+
+            i {
                 font-size: var(--icon-size);
                 color: var(--icon-color);
                 user-select: none;
-                flex: 1;
             }
 
-            .label {
-
+            code {
+                font-size: 80%;
+                user-select: all;
             }
         }
+
+        .icon-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
+        }
+
+        details {
+            display: flex;
+            flex-direction: column;
+
+            padding: 1rem;
+
+            border: 1px solid var(--card-border);
+            border-radius: 4px;
+        }
+
+        details[open] {
+            gap: 1rem;
+        }
+
 
         footer {
             font-size: 0.8rem;
@@ -234,7 +268,7 @@
 <header>
     <h1>{{name}}</h1>
     <div class="controls">
-        <button class="toggle" id="theme-toggle">Toggle Theme</button>
+        <button id="theme-toggle">Toggle Theme</button>
         <label>
             Size:
             <select id="size-control">
@@ -254,22 +288,21 @@
 
 <main>
     {{# each collections }}
-        <article>
-            <h2>{{ name }}</h2>
-            <small>Prefix: {{ prefix }}</small>
+        <details open>
+            <summary style="display: flex; align-items: center; gap: 1rem;">
+                <h2>{{ name }}</h2>
+                <small>Prefix: <code>{{ prefix }}</code></small>
+            </summary>
+
             <section class="grid">
                 {{# each icons }}
                     <div class="icon-card">
-                        <div class="preview">
-                            <i class="{{ className }}"></i>
-                        </div>
-                        <div class="label">
-                            <code>{{ name }}</code>
-                        </div>
+                        <i class="{{ className }}"></i>
+                        <code>{{ name }}</code>
                     </div>
                 {{/ each }}
             </section>
-        </article>
+        </details>
     {{/ each }}
 </main>
 
