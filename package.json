@@ -27,8 +27,7 @@
     "clean": "rimraf dist",
     "dev": "tsx src/index.ts",
     "prepack": "npm run build",
-    "test:many-icons": "npm pack && cd tests/many-icons && npm install ../../iconomatic-0.0.0-dev.tgz && npx iconomatic",
-    "test:custom-config": "npm pack && cd tests/custom-config && npm install ../../iconomatic-0.0.0-dev.tgz && npx iconomatic"
+    "test:many-icons": "npm pack && cd tests/many-icons && npm install --no-save -f ../../iconomatic-0.0.0-dev.tgz && npx iconomatic"
   },
   "devDependencies": {
     "@iconify/json": "^2.2.412",
@@ -38,12 +37,11 @@
     "@tsconfig/node-ts": "^23.6.2",
     "@tsconfig/strictest": "^2.0.8",
     "@types/fs-extra": "^11.0.4",
-    "@types/lodash.defaultsdeep": "^4.6.9",
     "@types/node": "^24.10.1",
     "@types/svg2ttf": "^5.0.3",
-    "prettier": "^3.7.2",
+    "prettier": "^3.7.3",
     "tsup": "^8.5.1",
-    "tsx": "^4.20.6",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   },
   "engines": {
@@ -57,12 +55,11 @@
   ],
   "peerDependencies": {
     "cosmiconfig": "^9.0.0",
-    "fs-extra": "^11.3.1",
+    "fs-extra": "^11.3.2",
     "handlebars": "^4.7.8",
-    "lodash.defaultsdeep": "^4.6.1",
     "svg2ttf": "^6.0.3",
     "svgicons2svgfont": "^15.0.1",
     "ttf2woff2": "^8.0.0",
-    "valibot": "^1.1.0"
+    "valibot": "^1.2.0"
   }
 }
