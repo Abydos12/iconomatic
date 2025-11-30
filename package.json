@@ -31,16 +31,18 @@
     "test:custom-config": "npm pack && cd tests/custom-config && npm install ../../iconomatic-0.0.0-dev.tgz && npx iconomatic"
   },
   "devDependencies": {
-    "@iconify/json": "^2.2.390",
-    "@iconify/tools": "^4.1.4",
-    "@tsconfig/node-ts": "^23.6.1",
-    "@tsconfig/node24": "^24.0.1",
+    "@iconify/json": "^2.2.412",
+    "@iconify/tools": "^5.0.0",
+    "@iconify/types": "^2.0.0",
+    "@tsconfig/node-lts": "^24.0.0",
+    "@tsconfig/node-ts": "^23.6.2",
+    "@tsconfig/strictest": "^2.0.8",
     "@types/fs-extra": "^11.0.4",
     "@types/lodash.defaultsdeep": "^4.6.9",
-    "@types/node": "^24.6.1",
+    "@types/node": "^24.10.1",
     "@types/svg2ttf": "^5.0.3",
-    "prettier": "^3.6.2",
-    "tsup": "^8.5.0",
+    "prettier": "^3.7.2",
+    "tsup": "^8.5.1",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3"
   },
@@ -60,6 +62,7 @@
     "lodash.defaultsdeep": "^4.6.1",
     "svg2ttf": "^6.0.3",
     "svgicons2svgfont": "^15.0.1",
-    "ttf2woff2": "^8.0.0"
+    "ttf2woff2": "^8.0.0",
+    "valibot": "^1.1.0"
   }
 }

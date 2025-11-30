@@ -1,19 +1,14 @@
 #!/usr/bin/env node
 import { logMemory } from "./utils.ts";
-import type { IconMeta, PictogramMeta } from "./types.ts";
-import { proccessFonts } from "./fonts.ts";
 import { loadConfig } from "./config.ts";
 import fs from "fs-extra";
 import {
-  loadIconsMeta,
-  writeIconsCss,
-  writeIconsFiles,
-  writeIconsJsonMap,
-} from "./icons.js";
+  processFontCollection,
+  processPictogramCollection,
+} from "./collections.js";
 import { writeDocs } from "./docs.js";
-import { loadPictogramsMeta, writePictogramsCss } from "./pictograms.js";
 
-export type { Config } from "./types.ts";
+export type { ConfigInput } from "./types.ts";
 
 async function main() {
   console.log("START");
@@ -24,38 +19,29 @@ async function main() {
     await fs.emptyDir(config.output);
   }
 
-  const icons: IconMeta[] = await loadIconsMeta(config);
-  console.log(`${icons.length} icons found`);
-  if (icons.length === 0) {
-    return;
-  }
-  logMemory("icons loaded");
+  const results: Record<string, { name: string; className: string }[]> = {};
 
-  const fontResults = await proccessFonts(icons, config);
-
-  if (config.icons.svg.enabled) {
-    await writeIconsFiles(icons, config);
-  }
-
-  if (config.icons.assets.json.enabled) {
-    await writeIconsJsonMap(icons, config);
-  }
-
-  if (config.icons.assets.css.enabled) {
-    await writeIconsCss(icons, fontResults, config);
-  }
-
-  const pictograms: PictogramMeta[] = [];
-  if (config.pictograms.enabled) {
-    pictograms.push(...(await loadPictogramsMeta(config)));
-
-    if (config.pictograms.assets.css.enabled) {
-      await writePictogramsCss(pictograms, config);
+  for (const collection of config.collections) {
+    switch (collection.type) {
+      case "FONT": {
+        results[collection.name] = await processFontCollection(
+          config,
+          collection,
+        );
+        break;
+      }
+      case "PICTOGRAMS": {
+        results[collection.name] = await processPictogramCollection(
+          config,
+          collection,
+        );
+        break;
+      }
     }
   }
 
   if (config.docs.enabled) {
-    await writeDocs({ icons, pictograms, config });
+    await writeDocs(config, results);
   }
 
   logMemory();

@@ -1,7 +1,10 @@
-import type { SVGIcons2SVGFontStreamOptions } from "svgicons2svgfont";
+import * as v from "valibot";
+import { join, resolve } from "path";
+import { TEMPLATES_DIRECTORY } from "./constants.js";
 
 export interface IconMeta {
   name: string;
+  className: string;
   path: string;
   codepoint: number;
   codepointHex: string;
@@ -10,62 +13,109 @@ export interface IconMeta {
 
 export interface PictogramMeta {
   name: string;
+  className: string;
   path: string;
   cssUrl: string;
 }
 
-const fontTypes = ["svg", "ttf", "woff", "woff2"] as const;
-export type FontType = (typeof fontTypes)[number];
+const FontsConfigSchema = v.object({
+  output: v.exactOptional(v.string(), "fonts"),
+  svg: v.exactOptional(v.boolean(), true),
+  ttf: v.exactOptional(v.boolean(), true),
+  woff2: v.exactOptional(v.boolean(), true),
+});
 
-type AssetType = "css" | "json";
+const PathSchema = v.pipe(v.string(), v.transform(resolve));
 
-export type FontConfig = {
-  enabled: boolean;
-  filename: string;
-  output: string;
-};
+const UnicodeSchema = v.object({
+  start: v.exactOptional(v.pipe(v.number(), v.integer()), 0xf0000),
+  codepoints: v.exactOptional(
+    v.record(v.string(), v.pipe(v.number(), v.integer())),
+    {},
+  ),
+});
 
-export type AssetConfig = {
-  enabled: boolean;
-  filename: string;
-  output: string;
-  template: string;
-};
+const BaseCollectionConfigSchema = v.object({
+  name: v.string(),
+  input: PathSchema,
+  output: v.string(),
+  prefix: v.string(),
+});
 
-interface IconsConfig {
-  enabled: boolean;
-  input: string;
-  output: string;
-  prefix: string;
-  svg: {
-    enabled: boolean;
-    output: string;
-  };
-  assets: { output: string } & Record<AssetType, AssetConfig>;
-}
+const FontCollectionConfigSchema = v.object({
+  type: v.literal("FONT"),
+  ...BaseCollectionConfigSchema.entries,
+  fonts: v.exactOptional(FontsConfigSchema, {}),
+  unicode: v.exactOptional(UnicodeSchema, {}),
+  templates: v.exactOptional(
+    v.object({
+      css: v.exactOptional(
+        PathSchema,
+        join(TEMPLATES_DIRECTORY, "icons.css.hbs"),
+      ),
+    }),
+    {},
+  ),
+});
 
-export interface Config {
+export type FontCollectionConfig = v.InferOutput<
+  typeof FontCollectionConfigSchema
+>;
+
+const PictogramsCollectionConfigSchema = v.object({
+  type: v.literal("PICTOGRAMS"),
+  ...BaseCollectionConfigSchema.entries,
+  templates: v.exactOptional(
+    v.object({
+      css: v.exactOptional(
+        PathSchema,
+        join(TEMPLATES_DIRECTORY, "pictograms.css.hbs"),
+      ),
+    }),
+    {},
+  ),
+});
+
+export type PictogramsCollectionConfig = v.InferOutput<
+  typeof PictogramsCollectionConfigSchema
+>;
+
+const CollectionConfigSchema = v.variant("type", [
+  FontCollectionConfigSchema,
+  PictogramsCollectionConfigSchema,
+]);
+
+export type CollectionConfig = v.InferOutput<typeof CollectionConfigSchema>;
+
+const DocsConfigSchema = v.object({
+  enabled: v.exactOptional(v.boolean(), true),
+  filename: v.exactOptional(v.string(), "index"),
+  output: v.exactOptional(v.string(), "docs"),
+  template: v.exactOptional(
+    PathSchema,
+    join(TEMPLATES_DIRECTORY, "docs.html.hbs"),
+  ),
+});
+
+export const ConfigSchema = v.object({
+  name: v.string(),
+  output: v.exactOptional(v.string(), "dist"),
+  clear: v.exactOptional(v.boolean(), true),
+  prefix: v.string(),
+  collections: v.array(CollectionConfigSchema),
+  docs: v.exactOptional(DocsConfigSchema, {}),
+});
+
+export type ConfigInput = v.InferInput<typeof ConfigSchema>;
+export type ConfigOutput = v.InferOutput<typeof ConfigSchema>;
+
+export interface DocTemplateContext {
   name: string;
-  output: string;
-  clear: boolean;
-  unicode: {
-    start: number;
-    codepoints: Record<string, number>;
-  };
-  fonts: { output: string } & Record<FontType, FontConfig>;
-  icons: IconsConfig;
-  pictograms: IconsConfig;
-  docs: {
-    enabled: boolean;
-    filename: string;
-    output: string;
-    template: string;
-  };
-  svgIcon2svgFontOptions: Partial<SVGIcons2SVGFontStreamOptions>;
+  collections: {
+    name: string;
+    type: CollectionConfig["type"];
+    prefix: string;
+    icons: { name: string; className: string }[];
+    css: string;
+  }[];
 }
-
-export type Options = DeepPartial<Config>;
-
-export type DeepPartial<T> = T extends object
-  ? { [K in keyof T]?: DeepPartial<T[K]> }
-  : T;

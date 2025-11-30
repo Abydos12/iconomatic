@@ -1,3 +1,6 @@
+import { dirname } from "node:path";
+import { mkdir, writeFile } from "node:fs/promises";
+
 export function streamToBuffer(stream: NodeJS.ReadableStream): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     const chunks: Buffer[] = [];
@@ -34,4 +37,15 @@ export function logMemory(label = "memory") {
   console.log(
     `[${label}] RSS: ${(used.rss / 1024 / 1024).toFixed(2)} MB, Heap: ${(used.heapUsed / 1024 / 1024).toFixed(2)} MB`,
   );
+}
+
+export async function writeJsonMap<T>(data: T[], path: string): Promise<void> {
+  console.group("JSON");
+  logMemory();
+
+  await mkdir(dirname(path), { recursive: true });
+  await writeFile(path, JSON.stringify(data));
+  console.log(`Saved: ${path}`);
+  logMemory();
+  console.groupEnd();
 }
