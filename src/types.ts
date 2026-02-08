@@ -45,6 +45,7 @@ const BaseCollectionConfigSchema = v.object({
 const FontCollectionConfigSchema = v.object({
   type: v.literal("FONT"),
   ...BaseCollectionConfigSchema.entries,
+  size: v.optional(v.string(), "1em"),
   fonts: v.exactOptional(FontsConfigSchema, {}),
   unicode: v.exactOptional(UnicodeSchema, {}),
   templates: v.exactOptional(
@@ -65,6 +66,7 @@ export type FontCollectionConfig = v.InferOutput<
 const PictogramsCollectionConfigSchema = v.object({
   type: v.literal("PICTOGRAMS"),
   ...BaseCollectionConfigSchema.entries,
+  size: v.optional(v.string(), "2em"),
   templates: v.exactOptional(
     v.object({
       css: v.exactOptional(

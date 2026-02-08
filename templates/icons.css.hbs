@@ -3,25 +3,24 @@ font-display: block;
 font-family: "{{ name }}";
 src:
 {{# each fonts }}
-  url('{{path}}?{{../timestamp}}') format('{{type}}'){{# unless @last }},{{/unless}}
+    url('{{ path }}?{{ ../timestamp }}') format('{{ type }}'){{#unless @last}},{{/unless}}
 {{/ each }};
 font-weight: normal;
 font-style: normal;
 }
 
-[class^="{{prefix}}-"]::before, [class*= "{{prefix}}-"]::before {
+[class^="{{ prefix }}-"]::before, [class*= "{{ prefix }}-"]::before {
 font-family: {{ name }} !important;
 font-style: normal;
 font-weight: normal !important;
 font-variant: normal;
 text-transform: none;
 line-height: 1;
+font-size: {{ size }};
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
 }
 
 {{# each icons }}
-.{{ ../prefix }}-{{ name }}::before {
-  content: "\\{{ codepointHex }}";
-}
+.{{ ../prefix }}-{{ name }}::before {content: "\\{{ codepointHex }}";}
 {{/ each }}

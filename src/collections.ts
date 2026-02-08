@@ -81,6 +81,7 @@ export async function processFontCollection(
     prefix: [config.prefix, collection.prefix].join("-"),
     name: config.name,
     timestamp: Date.now(),
+    size: collection.size,
   });
   await mkdir(dirname(paths.css), { recursive: true });
   await writeFile(paths.css, templated);
@@ -121,6 +122,7 @@ export async function processPictogramCollection(
     pictograms,
     prefix: [config.prefix, collection.prefix].join("-"),
     name: config.name,
+    size: collection.size,
   });
   await mkdir(dirname(paths.css), { recursive: true });
   await writeFile(paths.css, templated);

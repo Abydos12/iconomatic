@@ -18,6 +18,7 @@ export async function writeDocs(
     collections: config.collections.map((collection) => ({
       name: collection.name,
       type: collection.type,
+      size: collection.size,
       prefix: [config.prefix, collection.prefix].join("-"),
       icons: results[collection.name]!,
       css: relative(
