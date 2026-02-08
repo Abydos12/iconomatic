@@ -1,7 +1,6 @@
 import * as v from "valibot";
 import { join, resolve } from "path";
-import { TEMPLATES_DIRECTORY } from "./constants.js";
-import slug from "slug";
+import { TEMPLATES_DIRECTORY } from "./constants.ts";
 
 export interface IconMeta {
   name: string;

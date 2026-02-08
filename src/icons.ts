@@ -1,6 +1,6 @@
 import { extname } from "node:path";
-import type { ConfigOutput, FontCollectionConfig, IconMeta } from "./types.js";
-import { logMemory } from "./utils.js";
+import type { ConfigOutput, FontCollectionConfig, IconMeta } from "./types.ts";
+import { logMemory } from "./utils.ts";
 import { copyFile, mkdir, readdir } from "node:fs/promises";
 import { join } from "path";
 import slug from "slug";

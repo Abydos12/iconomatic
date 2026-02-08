@@ -6,8 +6,8 @@ import {
   processFontCollection,
   processPictogramCollection,
   writeMainCssFile,
-} from "./collections.js";
-import { writeDocs } from "./docs.js";
+} from "./collections.ts";
+import { writeDocs } from "./docs.ts";
 
 export type { ConfigInput } from "./types.ts";
 

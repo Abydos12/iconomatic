@@ -4,18 +4,18 @@ import type {
   IconMeta,
   PictogramMeta,
   PictogramsCollectionConfig,
-} from "./types.js";
-import { loadIconsMeta } from "./icons.js";
-import { logMemory, writeJsonMap } from "./utils.js";
-import { generateSVG } from "./fonts.js";
+} from "./types.ts";
+import { loadIconsMeta } from "./icons.ts";
+import { logMemory, writeJsonMap } from "./utils.ts";
+import { generateSVG } from "./fonts.ts";
 import svg2ttf from "svg2ttf";
 import ttf2woff2 from "ttf2woff2";
 import { dirname, posix } from "node:path";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import Handlebars from "handlebars";
-import { loadPictogramsMeta } from "./pictograms.js";
+import { loadPictogramsMeta } from "./pictograms.ts";
 import { join } from "path";
-import { TEMPLATES_DIRECTORY } from "./constants.js";
+import { TEMPLATES_DIRECTORY } from "./constants.ts";
 import slug from "slug";
 
 export async function processFontCollection(
