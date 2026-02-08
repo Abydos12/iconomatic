@@ -3,6 +3,7 @@ import type { ConfigOutput, FontCollectionConfig, IconMeta } from "./types.js";
 import { logMemory } from "./utils.js";
 import { copyFile, mkdir, readdir } from "node:fs/promises";
 import { join } from "path";
+import slug from "slug";
 
 export async function loadIconsMeta(
   config: ConfigOutput,
@@ -28,7 +29,7 @@ export async function loadIconsMeta(
     if (!entry.isFile() || extname(entry.name) !== ".svg") {
       continue;
     }
-    const name: string = entry.name.slice(0, -4);
+    const name: string = slug(entry.name.slice(0, -4));
     const className: string = [config.prefix, prefix, name].join("-");
     const path: string = join(input, entry.name);
     const codepoint: number = unicode.codepoints[name] ?? nextCodepoint();

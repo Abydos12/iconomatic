@@ -2,6 +2,7 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { posix, relative } from "node:path";
 import Handlebars from "handlebars";
 import type { ConfigOutput, DocTemplateContext } from "./types.ts";
+import slug from "slug";
 
 export async function writeDocs(
   config: ConfigOutput,
@@ -23,7 +24,11 @@ export async function writeDocs(
       icons: results[collection.name]!,
       css: relative(
         dir,
-        posix.join(config.output, collection.output, `${collection.name}.css`),
+        posix.join(
+          config.output,
+          collection.output,
+          `${slug(collection.name)}.css`,
+        ),
       ),
     })),
   });

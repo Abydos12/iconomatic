@@ -10,12 +10,13 @@ import { logMemory, writeJsonMap } from "./utils.js";
 import { generateSVG } from "./fonts.js";
 import svg2ttf from "svg2ttf";
 import ttf2woff2 from "ttf2woff2";
-import { dirname, posix, relative } from "node:path";
+import { dirname, posix } from "node:path";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import Handlebars from "handlebars";
 import { loadPictogramsMeta } from "./pictograms.js";
 import { join } from "path";
 import { TEMPLATES_DIRECTORY } from "./constants.js";
+import slug from "slug";
 
 export async function processFontCollection(
   config: ConfigOutput,
@@ -39,26 +40,30 @@ export async function processFontCollection(
         config.output,
         collection.output,
         collection.fonts.output,
-        `${collection.name}.svg`,
+        `${slug(collection.name)}.svg`,
       ),
       ttf: posix.join(
         config.output,
         collection.output,
         collection.fonts.output,
-        `${collection.name}.ttf`,
+        `${slug(collection.name)}.ttf`,
       ),
       woff2: posix.join(
         config.output,
         collection.output,
         collection.fonts.output,
-        `${collection.name}.woff2`,
+        `${slug(collection.name)}.woff2`,
       ),
     },
-    css: posix.join(config.output, collection.output, `${collection.name}.css`),
+    css: posix.join(
+      config.output,
+      collection.output,
+      `${slug(collection.name)}.css`,
+    ),
     json: posix.join(
       config.output,
       collection.output,
-      `${collection.name}.json`,
+      `${slug(collection.name)}.json`,
     ),
   };
 
@@ -107,11 +112,15 @@ export async function processPictogramCollection(
 
   const paths = {
     collection: posix.join(config.output, collection.output),
-    css: posix.join(config.output, collection.output, `${collection.name}.css`),
+    css: posix.join(
+      config.output,
+      collection.output,
+      `${slug(collection.name)}.css`,
+    ),
     json: posix.join(
       config.output,
       collection.output,
-      `${collection.name}.json`,
+      `${slug(collection.name)}.json`,
     ),
   };
 
@@ -136,7 +145,11 @@ export async function writeMainCssFile(config: ConfigOutput) {
   const urls: string[] = config.collections.map((collection) =>
     posix.relative(
       config.output,
-      posix.join(config.output, collection.output, `${collection.name}.css`),
+      posix.join(
+        config.output,
+        collection.output,
+        `${slug(collection.name)}.css`,
+      ),
     ),
   );
 
@@ -150,22 +163,8 @@ export async function writeMainCssFile(config: ConfigOutput) {
     urls,
   });
 
-  const path = join(config.output, `${config.name.toLowerCase()}.css`);
+  const path = join(config.output, `${slug(config.name)}.css`);
 
   await mkdir(dirname(path), { recursive: true });
   await writeFile(path, templated);
 }
-
-// class Collection<T> {
-//   private readonly appConfig: ConfigOutput;
-//   readonly name: string;
-//
-//   constructor(appConfig: ConfigOutput, name: string) {
-//     this.appConfig = appConfig;
-//     this.name = name;
-//   }
-//
-//   get config() {
-//     return this.appConfig[this.name];
-//   }
-// }
