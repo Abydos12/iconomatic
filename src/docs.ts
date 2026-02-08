@@ -1,5 +1,5 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
-import { posix, relative } from "node:path";
+import { posix } from "node:path";
 import Handlebars from "handlebars";
 import type { ConfigOutput, DocTemplateContext } from "./types.ts";
 import slug from "slug";
@@ -16,20 +16,16 @@ export async function writeDocs(
 
   const docsTemplated = docsTemplate({
     name: config.name,
+    css: posix.relative(
+      dir,
+      posix.join(config.output, `${slug(config.name)}.css`),
+    ),
     collections: config.collections.map((collection) => ({
       name: collection.name,
       type: collection.type,
       size: collection.size,
       prefix: [config.prefix, collection.prefix].join("-"),
       icons: results[collection.name]!,
-      css: relative(
-        dir,
-        posix.join(
-          config.output,
-          collection.output,
-          `${slug(collection.name)}.css`,
-        ),
-      ),
     })),
   });
   await mkdir(dir);

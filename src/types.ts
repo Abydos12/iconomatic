@@ -113,11 +113,11 @@ export type ConfigOutput = v.InferOutput<typeof ConfigSchema>;
 
 export interface DocTemplateContext {
   name: string;
+  css: string;
   collections: {
     name: string;
     type: CollectionConfig["type"];
     prefix: string;
     icons: { name: string; className: string }[];
-    css: string;
   }[];
 }
