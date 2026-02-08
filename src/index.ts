@@ -5,6 +5,7 @@ import fs from "fs-extra";
 import {
   processFontCollection,
   processPictogramCollection,
+  writeMainCssFile,
 } from "./collections.js";
 import { writeDocs } from "./docs.js";
 
@@ -43,6 +44,8 @@ async function main() {
   if (config.docs.enabled) {
     await writeDocs(config, results);
   }
+
+  await writeMainCssFile(config);
 
   logMemory();
 }

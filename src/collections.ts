@@ -10,10 +10,12 @@ import { logMemory, writeJsonMap } from "./utils.js";
 import { generateSVG } from "./fonts.js";
 import svg2ttf from "svg2ttf";
 import ttf2woff2 from "ttf2woff2";
-import { dirname, posix } from "node:path";
+import { dirname, posix, relative } from "node:path";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import Handlebars from "handlebars";
 import { loadPictogramsMeta } from "./pictograms.js";
+import { join } from "path";
+import { TEMPLATES_DIRECTORY } from "./constants.js";
 
 export async function processFontCollection(
   config: ConfigOutput,
@@ -128,6 +130,30 @@ export async function processPictogramCollection(
   await writeFile(paths.css, templated);
 
   return pictograms;
+}
+
+export async function writeMainCssFile(config: ConfigOutput) {
+  const urls: string[] = config.collections.map((collection) =>
+    posix.relative(
+      config.output,
+      posix.join(config.output, collection.output, `${collection.name}.css`),
+    ),
+  );
+
+  const templateStr: string = await readFile(
+    join(TEMPLATES_DIRECTORY, "main.css.hbs"),
+    "utf8",
+  );
+  const template = Handlebars.compile<{ urls: string[] }>(templateStr);
+
+  const templated = template({
+    urls,
+  });
+
+  const path = join(config.output, `${config.name.toLowerCase()}.css`);
+
+  await mkdir(dirname(path), { recursive: true });
+  await writeFile(path, templated);
 }
 
 // class Collection<T> {
