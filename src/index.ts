@@ -8,15 +8,17 @@ import {
   writeMainCssFile,
 } from "./collections.ts";
 import { writeDocs } from "./docs.ts";
+import consola from "consola";
 
 export type { ConfigInput } from "./types.ts";
 
 async function main() {
-  console.log("START");
-  logMemory();
+  consola.box("Iconomatic");
+
   const config = await loadConfig();
 
   if (config.clear) {
+    consola.debug(`Clearing the output directory... [${config.output}]`);
     await fs.emptyDir(config.output);
   }
 
@@ -50,4 +52,4 @@ async function main() {
   logMemory();
 }
 
-main().finally(() => console.log("END"));
+main().catch(consola.error);

@@ -3,6 +3,7 @@ import { posix } from "node:path";
 import Handlebars from "handlebars";
 import type { ConfigOutput, DocTemplateContext } from "./types.ts";
 import slug from "slug";
+import consola from "consola";
 
 export async function writeDocs(
   config: ConfigOutput,
@@ -30,4 +31,5 @@ export async function writeDocs(
   });
   await mkdir(dir);
   await writeFile(path, docsTemplated);
+  consola.success(`HTML Documentation generated at [${path}]`);
 }

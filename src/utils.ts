@@ -1,5 +1,6 @@
 import { dirname } from "node:path";
 import { mkdir, writeFile } from "node:fs/promises";
+import consola from "consola";
 
 export function streamToBuffer(stream: NodeJS.ReadableStream): Promise<Buffer> {
   return new Promise((resolve, reject) => {
@@ -16,7 +17,7 @@ export function streamToBuffer(stream: NodeJS.ReadableStream): Promise<Buffer> {
   });
 }
 
-export function printProgress(current: number, total: number) {
+export function logProgress(current: number, total: number) {
   const width = 40;
   const ratio = current / total;
   const filled = Math.round(ratio * width);
@@ -32,20 +33,19 @@ export function printProgress(current: number, total: number) {
   }
 }
 
-export function logMemory(label = "memory") {
-  const used = process.memoryUsage();
-  console.log(
-    `[${label}] RSS: ${(used.rss / 1024 / 1024).toFixed(2)} MB, Heap: ${(used.heapUsed / 1024 / 1024).toFixed(2)} MB`,
+export function logMemory() {
+  const mem = process.memoryUsage();
+  const rss = (mem.rss / 1024 / 1024).toFixed(2);
+  const heapUsed = (mem.heapUsed / 1024 / 1024).toFixed(2);
+  const heapTotal = (mem.heapTotal / 1024 / 1024).toFixed(2);
+  const external = (mem.external / 1024 / 1024).toFixed(2);
+
+  consola.debug(
+    `Memory usage — RSS: ${rss}MB, Heap: ${heapUsed}/${heapTotal}MB, External: ${external}MB`,
   );
 }
 
 export async function writeJsonMap<T>(data: T[], path: string): Promise<void> {
-  console.group("JSON");
-  logMemory();
-
   await mkdir(dirname(path), { recursive: true });
   await writeFile(path, JSON.stringify(data));
-  console.log(`Saved: ${path}`);
-  logMemory();
-  console.groupEnd();
 }

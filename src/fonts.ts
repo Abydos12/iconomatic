@@ -3,7 +3,7 @@ import {
   SVGIcons2SVGFontStream,
   type SVGIcons2SVGFontStreamOptions,
 } from "svgicons2svgfont";
-import { printProgress, streamToBuffer } from "./utils.ts";
+import { logProgress, streamToBuffer } from "./utils.ts";
 import { createReadStream } from "node:fs";
 import { svgIcon2svgFontOptions } from "./config.js";
 
@@ -31,7 +31,7 @@ export async function generateSVG(
       // Wait for backpressure
       await new Promise<void>((resolve) => fontStream.once("drain", resolve));
     }
-    printProgress(index + 1, icons.length);
+    logProgress(index + 1, icons.length);
   }
 
   fontStream.end();

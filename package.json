@@ -27,7 +27,7 @@
     "clean": "rimraf dist",
     "dev": "tsx src/index.ts",
     "prepack": "npm run build",
-    "test:many-icons": "npm pack && cd tests/many-icons && npm install --no-save -f ../../iconomatic-0.0.0-dev.tgz && npx iconomatic"
+    "test:many-icons": "npm pack && cd tests/many-icons && npm up --no-save -f ../../iconomatic-0.0.0-dev.tgz && npx iconomatic"
   },
   "devDependencies": {
     "@iconify/json": "^2.2.437",
@@ -55,6 +55,7 @@
     "icons"
   ],
   "peerDependencies": {
+    "consola": "^3.4.2",
     "cosmiconfig": "^9.0.0",
     "fs-extra": "^11.3.2",
     "handlebars": "^4.7.8",

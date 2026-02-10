@@ -17,19 +17,25 @@ import { loadPictogramsMeta } from "./pictograms.ts";
 import { join } from "path";
 import { TEMPLATES_DIRECTORY } from "./constants.ts";
 import slug from "slug";
+import consola from "consola";
 
 export async function processFontCollection(
   config: ConfigOutput,
   collection: FontCollectionConfig,
-) {
+): Promise<IconMeta[]> {
+  consola.start(`Processing collection [${collection.name}]`);
   const icons: IconMeta[] = await loadIconsMeta(config, collection);
-  console.log(`${icons.length} icons found`);
+  consola.info(`${icons.length} icons found`);
+
   if (icons.length === 0) {
     return icons;
   }
-  logMemory("icons loaded");
 
-  const svg = await generateSVG(icons, { fontName: collection.name });
+  logMemory();
+
+  const svg = await generateSVG(icons, {
+    fontName: collection.name,
+  });
   const ttf = svg2ttf(svg.toString());
   const woff2 = ttf2woff2(ttf.buffer);
 
@@ -69,10 +75,14 @@ export async function processFontCollection(
 
   await mkdir(dirname(paths.fonts.svg), { recursive: true });
   await writeFile(paths.fonts.svg, svg);
+  consola.success(`SVG font generated at [${paths.fonts.svg}]`);
   await writeFile(paths.fonts.ttf, ttf.buffer);
+  consola.success(`TTF font generated at [${paths.fonts.ttf}]`);
   await writeFile(paths.fonts.woff2, woff2);
+  consola.success(`WOFF2 font generated at [${paths.fonts.woff2}]`);
 
   await writeJsonMap(icons, paths.json);
+  consola.success(`JSON map generated at [${paths.json}]`);
 
   const templateStr: string = await readFile(collection.templates.css, "utf8");
   const template = Handlebars.compile(templateStr);
@@ -92,6 +102,7 @@ export async function processFontCollection(
   });
   await mkdir(dirname(paths.css), { recursive: true });
   await writeFile(paths.css, templated);
+  consola.success(`CSS generated at [${paths.css}]`);
 
   return icons;
 }
@@ -99,16 +110,17 @@ export async function processFontCollection(
 export async function processPictogramCollection(
   config: ConfigOutput,
   collection: PictogramsCollectionConfig,
-) {
+): Promise<PictogramMeta[]> {
+  consola.start(`Processing collection [${collection.name}]`);
   const pictograms: PictogramMeta[] = await loadPictogramsMeta(
     config,
     collection,
   );
-  console.log(`${pictograms.length} pictograms found`);
+  consola.info(`${pictograms.length} pictograms found`);
   if (pictograms.length === 0) {
     return pictograms;
   }
-  logMemory("pictograms loaded");
+  logMemory();
 
   const paths = {
     collection: posix.join(config.output, collection.output),
@@ -125,6 +137,7 @@ export async function processPictogramCollection(
   };
 
   await writeJsonMap(pictograms, paths.json);
+  consola.success(`JSON map generated at [${paths.json}]`);
 
   const templateStr: string = await readFile(collection.templates.css, "utf8");
   const template = Handlebars.compile(templateStr);
@@ -137,6 +150,7 @@ export async function processPictogramCollection(
   });
   await mkdir(dirname(paths.css), { recursive: true });
   await writeFile(paths.css, templated);
+  consola.success(`CSS generated at [${paths.css}]`);
 
   return pictograms;
 }
@@ -167,4 +181,5 @@ export async function writeMainCssFile(config: ConfigOutput) {
 
   await mkdir(dirname(path), { recursive: true });
   await writeFile(path, templated);
+  consola.success(`Main CSS generated at [${path}]`);
 }
