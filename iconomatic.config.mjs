@@ -1,19 +1,19 @@
 /** @type {import("src").ConfigInput} */
 const config = {
-  name: "icon-lib",
+  name: "Ze best lib",
   output: "tests/dev/dist",
   prefix: "z",
   collections: [
     {
       type: "FONT",
-      name: "material-symbols",
+      name: "Material Symbols",
       prefix: "ms",
       input: "tests/dev/Material Symbols",
       output: "material-symbols",
     },
     {
       type: "PICTOGRAMS",
-      name: "fluent-color",
+      name: "Fluent Color",
       prefix: "fc",
       input: "tests/dev/Fluent UI System Color Icons",
       output: "fluent-color",
