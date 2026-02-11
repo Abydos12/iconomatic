@@ -171,7 +171,7 @@
 
             display: flex;
             flex-direction: column;
-            gap: .5rem;
+            gap: 2rem;
         }
 
         aside {
@@ -311,6 +311,24 @@
             backdrop-filter: invert(15%);
         }
 
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            font-size: 0.875rem;
+            color: var(--fg);
+        }
+
+        .tag code {
+            backdrop-filter: invert(10%);
+            padding: 0.125rem 0.375rem;
+            border-radius: 2px;
+        }
+
     </style>
 </head>
 <body>
@@ -324,6 +342,8 @@
             <button id="theme-system-btn" class="theme-button" title="System Theme">🖥️</button>
         </div>
     </header>
+
+    <h3>Controls</h3>
 
     <div class="controls">
         <label>
@@ -341,15 +361,31 @@
             <input type="color" id="color-control"/>
         </label>
     </div>
-</aside>
 
+    <h3>Collections</h3>
+
+    <nav style="display: flex; flex-direction: column; gap: 1rem;">
+        {{# each collections }}
+            <div style="display: flex; align-items: center; gap: 1rem; justify-content: space-between">
+
+
+                <a href="#{{ name }}">{{ name }}</a>
+                <span class="tag">{{ icons.length }}</span>
+            </div>
+        {{/ each }}
+    </nav>
+</aside>
 
 <main>
     {{# each collections }}
-        <section>
+        <section id="{{ name }}">
             <header>
                 <h2>{{ name }}</h2>
-                <small>Prefix: <code>{{ prefix }}</code></small>
+                <span class="tag">{{ icons.length }}</span>
+                <div class="tag">
+                    <span>Prefix:</span>
+                    <code>{{ prefix }}</code>
+                </div>
             </header>
 
             <div class="grid">
