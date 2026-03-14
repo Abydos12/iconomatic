@@ -410,9 +410,7 @@
     const colorControl = document.getElementById("color-control");
     const defaultTheme = localStorage.getItem('theme');
 
-    if (defaultTheme) {
-        applyTheme(defaultTheme);
-    }
+    applyTheme(defaultTheme ?? 'system');
 
     function applyTheme(theme) {
         themeLightBtn.classList.remove('active');
