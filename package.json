@@ -27,17 +27,17 @@
     "clean": "rimraf dist",
     "dev": "tsx src/index.ts",
     "prepack": "npm run build",
-    "test:many-icons": "npm pack && cd tests/many-icons && npm up --no-save -f ../../iconomatic-0.0.0-dev.tgz && npx iconomatic"
+    "test:many-icons": "npm pack && cd tests/many-icons && npm i --no-save -f ../../iconomatic-0.0.0-dev.tgz && npx iconomatic"
   },
   "devDependencies": {
-    "@iconify/json": "^2.2.437",
-    "@iconify/tools": "^5.0.3",
+    "@iconify/json": "^2.2.449",
+    "@iconify/tools": "^5.0.5",
     "@iconify/types": "^2.0.0",
     "@tsconfig/node-lts": "^24.0.0",
-    "@tsconfig/node-ts": "^23.6.3",
+    "@tsconfig/node-ts": "^23.6.4",
     "@tsconfig/strictest": "^2.0.8",
     "@types/fs-extra": "^11.0.4",
-    "@types/node": "^25.2.2",
+    "@types/node": "^25.5.0",
     "@types/slug": "^5.0.9",
     "@types/svg2ttf": "^5.0.3",
     "prettier": "^3.8.1",
