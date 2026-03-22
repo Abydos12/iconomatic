@@ -9,7 +9,7 @@ font-weight: normal;
 font-style: normal;
 }
 
-[class^="{{ prefix }}-"]::before, [class*= "{{ prefix }}-"]::before {
+[class^="{{ prefix }}-"], [class*= "{{ prefix }}-"] {
 font-family: {{ name }} !important;
 font-style: normal;
 font-weight: normal !important;
@@ -19,6 +19,7 @@ line-height: 1;
 font-size: {{ size }};
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
+user-select: none;
 }
 
 {{# each icons }}
