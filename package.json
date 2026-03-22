@@ -30,8 +30,8 @@
     "test:many-icons": "npm pack && cd tests/many-icons && npm i --no-save -f ../../iconomatic-0.0.0-dev.tgz && npx iconomatic"
   },
   "devDependencies": {
-    "@iconify/json": "^2.2.449",
-    "@iconify/tools": "^5.0.5",
+    "@iconify/json": "^2.2.453",
+    "@iconify/tools": "^5.0.6",
     "@iconify/types": "^2.0.0",
     "@tsconfig/node-lts": "^24.0.0",
     "@tsconfig/node-ts": "^23.6.4",
